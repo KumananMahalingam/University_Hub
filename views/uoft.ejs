@@ -1,0 +1,56 @@
+<h1>UOFT</h1>
+<pre><%= JSON.stringify(data, null, 2) %></pre>
+<body>
+    <% ratings.forEach(row => { %>
+        <%= row.university_name %>
+        <%= row.overall %>
+        <%= row.academics %>
+        <%= row.safety %>
+        <%= row.partying %>
+        <%= row.cafeteria %>
+        <%= row.happiness %>
+        <%= row.residences %>
+        <%= row.location %>
+        <%= row.diversity %>
+        <%= row.affordability %>
+        <%= row.employability %>
+        <br>
+    <% }) %>
+    <br>
+    <% data.forEach(row => { %>
+        <%= row.university_name %>
+        <%= row.major_name %>
+        <%= row.admission_average %>
+        $<%= row.tuition_cost %>
+        <%= row.books_supplies %>
+        <br>
+    <% }) %>
+    <br>
+    <% admissions.forEach(row => { %>
+        <%= row.university_name %>
+        <%= row.application_deadline %>
+        <%= row.application_fee %>
+        <%= row.overall_average %>
+        <%= row.website_url %>
+        <%= row.supplementary_application %>
+        <br>
+    <% }) %>
+    <br>
+    <% cost.forEach(row => { %>
+        <%= row.university_name %>
+        <%= row.average_cost %>
+        <%= row.average_housing_cost %>
+        <%= row.average_meal_plan_cost %>
+        <%= row.average_domestic_tuition %>
+        <%= row.average_international_cost %>
+        <br>
+    <% }) %>
+    <br>
+    <% grad.forEach(row => { %>
+        <%= row.university_name %>
+        <%= row.grad_rate %>
+        <%= row.median_income %>
+        <%= row.employment_rate %>
+        <br>
+    <% }) %>
+</body>

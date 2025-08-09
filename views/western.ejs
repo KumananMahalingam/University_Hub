@@ -1,0 +1,65 @@
+<h1>Western University</h1>
+<pre><%= JSON.stringify(data3, null, 2) %></pre>
+<body>
+    <% ratings3.forEach(row => { %>
+        <%= row.university_name %>
+        <%= row.overall %>
+        <%= row.academics %>
+        <%= row.safety %>
+        <%= row.partying %>
+        <%= row.cafeteria %>
+        <%= row.happiness %>
+        <%= row.residences %>
+        <%= row.location %>
+        <%= row.diversity %>
+        <%= row.affordability %>
+        <%= row.employability %>
+        <br>
+    <% }) %>
+    <br>
+    <% data3.forEach(row => { %>
+        <%= row.university_name %>
+        <%= row.major_name %>
+        <%= row.admission_average %>
+        $<%= row.tuition_cost %>
+        <%= row.books_supplies %>
+        <br>
+    <% }) %>
+    <br>
+    <% residences3.forEach(row => { %>
+        <%= row.residence_name %>
+        <%= row.room_type %>
+        <%= row.capacity %>
+        <%= row.price_range %>
+        <%= row.rating %>
+        <br>
+    <% }) %>
+    <br>
+    <% admissions3.forEach(row => { %>
+        <%= row.university_name %>
+        <%= row.application_deadline %>
+        <%= row.application_fee %>
+        <%= row.overall_average %>
+        <%= row.website_url %>
+        <%= row.supplementary_application %>
+        <br>
+    <% }) %>
+    <br>
+    <% cost3.forEach(row => { %>
+        <%= row.university_name %>
+        <%= row.average_cost %>
+        <%= row.average_housing_cost %>
+        <%= row.average_meal_plan_cost %>
+        <%= row.average_domestic_tuition %>
+        <%= row.average_international_cost %>
+        <br>
+    <% }) %>
+    <br>
+    <% grad3.forEach(row => { %>
+        <%= row.university_name %>
+        <%= row.grad_rate %>
+        <%= row.median_income %>
+        <%= row.employment_rate %>
+        <br>
+    <% }) %>
+</body>

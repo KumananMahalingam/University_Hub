@@ -1,1 +1,79 @@
 <h1>Review Your University</h1>
+
+<form id="reviewForm" method="POST" action="/review">
+    <div>
+        <label for="name">Title:</label>
+        <input type="text" id="name" name="name" required>
+    </div>
+    <div>
+        <label for="university">Choose a University:</label>
+        <select name="university_id" id="university">
+            <option value="">--Please choose an option--</option>
+            <option value="4">University of Toronto</option>
+            <option value="1">University of Waterloo</option>
+            <option value="2">Western University</option>
+            <option value="3">Queens University</option>
+        </select>
+    </div>
+    <input type="hidden" name="rating" id="ratingInput" value="0">
+    <div id="starRating">
+        <span class="star" data-value="1">&#9733;</span>
+        <span class="star" data-value="2">&#9733;</span>
+        <span class="star" data-value="3">&#9733;</span>
+        <span class="star" data-value="4">&#9733;</span>
+        <span class="star" data-value="5">&#9733;</span>
+    </div>
+    <div id="review_text">
+        <textarea rows="5" cols="40" name="body">Enter Review Here: </textarea>
+    </div>
+    <br>
+    <button type="submit">Submit Review</button>
+</form>
+
+<style>
+    #starRating {
+        font-size: 2rem;
+        cursor: pointer;
+    }
+    .star {
+        color: lightgray;
+    }
+    .star.filled {
+        color: gold;
+    }
+</style>
+
+<script>
+    const stars = document.querySelectorAll('#starRating .star');
+    const ratingInput = document.getElementById('ratingInput');
+    let rating = 0;
+
+    stars.forEach(star => {
+        star.addEventListener('mouseover', () => {
+            resetStars();
+            highlightStars(star.dataset.value);
+        });
+
+        star.addEventListener('mouseout', () => {
+            resetStars();
+            if (rating > 0) highlightStars(rating);
+        });
+
+        star.addEventListener('click', () => {
+            rating = star.dataset.value;
+            ratingInput.value = rating; // Save to hidden input for form
+            resetStars();
+            highlightStars(rating);
+        });
+    });
+
+    function highlightStars(count) {
+        stars.forEach(s => {
+            if (s.dataset.value <= count) s.classList.add('filled');
+        });
+    }
+
+    function resetStars() {
+        stars.forEach(s => s.classList.remove('filled'));
+    }
+</script>
