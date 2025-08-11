@@ -114,9 +114,30 @@ app.get('/search', async (req, res) => {
     }
 })
 
-app.get('/calculator', (req, res) => {
-    res.render('calculator.ejs')
+app.get('/calculator', async (req, res) => {
+    res.render('calculator.ejs');
 })
+
+app.get('/averages/:universityId/:majorId', async (req, res) => {
+  const { universityId, majorId } = req.params;
+  try {
+    const result = await pool.query(
+      `SELECT avg1, avg2, avg3, avg4, avg5, avg6, avg7, avg8, avg9, avg10, avg11
+       FROM program_admission_averages
+       WHERE university_id = $1 AND major_id = $2`,
+      [universityId, majorId]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'No data found' });
+    }
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Database error' });
+  }
+});
 
 app.get('/review', (req, res) => {
     res.render('review.ejs')

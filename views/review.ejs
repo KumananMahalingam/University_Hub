@@ -28,6 +28,7 @@
     </div>
     <br>
     <button type="submit">Submit Review</button>
+    <a href="/">Home</a>
 </form>
 
 <style>
@@ -56,7 +57,9 @@
 
         star.addEventListener('mouseout', () => {
             resetStars();
-            if (rating > 0) highlightStars(rating);
+            if (rating > 0) {
+                highlightStars(rating)
+            };
         });
 
         star.addEventListener('click', () => {
@@ -69,7 +72,9 @@
 
     function highlightStars(count) {
         stars.forEach(s => {
-            if (s.dataset.value <= count) s.classList.add('filled');
+            if (s.dataset.value <= count) {
+                s.classList.add('filled')
+            };
         });
     }
 
