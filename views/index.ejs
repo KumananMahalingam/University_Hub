@@ -1,7 +1,41 @@
-<h1>Hi <%= name %></h1>
-<form action="/logout?_method=DELETE" method="POST">
-    <button type="submit">Log Out</button>
-</form>
-<a href="/search">University Search</a> 
-<a href="/calculator">Admission Calculator</a> 
-<a href="/review">Review University</a> 
+<body>
+    <link rel="stylesheet" href="/index_style.css">
+    <ul>
+        <li><a class="active" href="/">Home</a></li>
+        <li><a href="/review">Review University</a></li>
+        <li><a href="/calculator">Admission Calculator</a></li>
+        <li><a href="/search">University Search</a></li>
+        <li class="profile-menu">
+            <img src="profile.png" alt="Profile" class="profile-icon">
+            <div class="dropdown">
+                <form action="/logout?_method=DELETE" method="POST">
+                    <button type="submit">Log Out</button>
+                </form>
+            </div>
+        </li>
+    </ul>
+    <div class="main-content">
+        <div class="left-container">
+            <button class="button-pill">Click Me</button>
+            <h2 class="main-title">UniversityHub</h2>
+            <p class="sub-title">Your university resource hub.</p>
+            <button class="search-button" onclick="window.location.href='/search'">
+                Search Universities
+            </button>
+        </div>
+        <div class="right-container">
+            <div>
+                <span>Search</span>
+                <span class="value">4 Universities</span>
+            </div>
+            <div>
+                <span>Admission Calculator</span>
+                <span class="value">10+ Past Averages</span>
+            </div>
+            <div>
+                <span>Majors</span>
+                <span class="value">40+ Majors</span>
+            </div>
+        </div>
+    </div>
+</body> 

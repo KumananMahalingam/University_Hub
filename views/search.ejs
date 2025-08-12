@@ -1,42 +1,69 @@
-<h1>University's in Canada</h1>
-<a href="/uoft">UOFT</a> 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet" href="search_style.css">
+<title>Universities in Canada</title>
+</head>
 <body>
-    <% data5.forEach(row => { %>
-        <% if (row.name == 'University of Toronto') { %> 
-            <%= row.name %>,
-            <%= row.city %>,
-            <%= row.province %>,
-            <%= row.country %>,
-        <% } %>
-    <% }) %>
+  <nav>
+    <ul>
+      <li><a class="active" href="/">Home</a></li>
+      <li><a href="/review">Review University</a></li>
+      <li><a href="/calculator">Admission Calculator</a></li>
+      <li><a href="/search">University Search</a></li>
+      <li class="profile-menu">
+        <img src="profile.png" alt="Profile" class="profile-icon">
+        <div class="dropdown">
+          <form action="/logout?_method=DELETE" method="POST">
+            <button type="submit">Log Out</button>
+          </form>
+        </div>
+      </li>
+    </ul>
+  </nav>
+
+  <div class="container">
+    <h1>Universities in Canada</h1>
+    <div class="cards-wrapper">
+      <% data5.forEach(row => { %>
+        <%
+        // Map each university name to its image path or URL
+        const images = {
+        'University of Toronto': 'night.jpg',
+        'University of Waterloo': 'orange_city.jpg',
+        'Western University': 'purple_city.jpg',
+        'Queens University': 'sunset.jpg'
+        };
+        %>
+        <% 
+          let url;
+          if(row.name === 'University of Toronto') url = 'uoft';
+          else if(row.name === 'University of Waterloo') url = 'uwaterloo';
+          else if(row.name === 'Western University') url = 'western';
+          else if(row.name === 'Queens University') url = 'queens';
+          else url = row.name.toLowerCase().replace(/\s+/g, '');
+        %>
+        <a href="/<%= url %>" class="card" aria-label="<%= row.name %>">
+          <img src="<%= images[row.name] || 'https://via.placeholder.com/280x160?text=University+Image' %>" alt="<%= row.name %> Image" />
+          <div class="card-content">
+            <div class="university-name"><%= row.name %></div>
+            <div class="badges">
+              <span class="badge"><%= row.province %></span>
+              <span class="badge"><%= row.city %></span>
+              <span class="badge"><%= row.country %></span>
+            </div>
+          </div>
+        </a>
+      <% }) %>
+    </div>
+  </div>
 </body>
-<br>
-<a href="/uwaterloo">University of Waterloo</a> 
-    <% data5.forEach(row => { %>
-        <% if (row.name == 'University of Waterloo') { %> 
-            <%= row.name %>,
-            <%= row.city %>,
-            <%= row.province %>,
-            <%= row.country %>,
-        <% } %>
-    <% }) %>
-<br>
-<a href="/western">Western University</a>
-    <% data5.forEach(row => { %>
-        <% if (row.name == 'Western University') { %> 
-            <%= row.name %>,
-            <%= row.city %>,
-            <%= row.province %>,
-            <%= row.country %>,
-        <% } %>
-    <% }) %>
-<br>
-<a href="/queens">Queens University</a> 
-    <% data5.forEach(row => { %>
-        <% if (row.name == 'Queens University') { %> 
-            <%= row.name %>,
-            <%= row.city %>,
-            <%= row.province %>,
-            <%= row.country %>,
-        <% } %>
-    <% }) %>
+</html>
+
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    document.querySelector('.container').classList.add('slide-up');
+  });
+</script>

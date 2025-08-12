@@ -29,8 +29,16 @@
 
   <canvas id="averagesChart" width="600" height="400" style="margin-top: 30px;"></canvas>
 
+  <br>
+  <div>
+    <label for="user_average">Enter Your Average:</label>
+    <input type="text" id="user_average" name="user_average"> 
+  </div>
+  <button type="button" id="check_chances_btn">Check Chances</button>
+  <p id="result"></p>
+  <p id="notes" style="color:gray;"></p>
+
   <script>
-    // Majors grouped by university ID
     const majorsByUniversity = {
       1: [
         { id: 1, name: "Chemical Engineering" },
@@ -136,33 +144,71 @@
       updateChart(universityId, majorId);
     });
 
+    let currentProgramMean = null;
+    let currentProgramNotes = null;
+
     async function updateChart(universityId, majorId) {
       try {
         const response = await fetch(`/averages/${universityId}/${majorId}`);
-        if (!response.ok) throw new Error('Network error');
+        if (!response.ok) {
+          throw new Error('Network error');
+        }
 
         const data = await response.json();
 
-        averagesChart.data.datasets[0].data = [
-          data.avg1 || 0,
-          data.avg2 || 0,
-          data.avg3 || 0,
-          data.avg4 || 0,
-          data.avg5 || 0,
-          data.avg6 || 0,
-          data.avg7 || 0,
-          data.avg8 || 0,
-          data.avg9 || 0,
-          data.avg10 || 0,
-          data.avg11 || 0
+        const averages = [
+          data.avg1 || 0, data.avg2 || 0, data.avg3 || 0, data.avg4 || 0,
+          data.avg5 || 0, data.avg6 || 0, data.avg7 || 0, data.avg8 || 0,
+          data.avg9 || 0, data.avg10 || 0, data.avg11 || 0
         ];
+
+        averagesChart.data.datasets[0].data = averages;
         averagesChart.update();
+
+        const sum = averages.reduce((acc, val) => acc + val, 0);
+        currentProgramMean = sum / averages.length;
+
+        currentProgramNotes = data.notes;
+
       } catch (error) {
         console.error('Error fetching averages:', error);
         averagesChart.data.datasets[0].data = new Array(labels.length).fill(0);
         averagesChart.update();
+        currentProgramMean = null;
+        currentProgramNotes = null;
       }
     }
+
+  document.getElementById('check_chances_btn').addEventListener('click', () => {
+    const userAverage = parseFloat(document.getElementById('user_average').value);
+    const resultElement = document.getElementById('result');
+    const notesElement = document.getElementById('notes');
+
+    if (!currentProgramMean) {
+      resultElement.textContent = "Please select a university and major first.";
+      notesElement.textContent = "";
+      return;
+    }
+
+    if (isNaN(userAverage)) {
+      resultElement.textContent = "Please enter a valid number for your average.";
+      notesElement.textContent = "";
+      return;
+    }
+
+    if (userAverage >= currentProgramMean) {
+      resultElement.textContent = `You have a good chance! Program mean is ${currentProgramMean.toFixed(2)}%.`;
+    } else {
+      resultElement.textContent = `It might be competitive. Program mean is ${currentProgramMean.toFixed(2)}%.`;
+    }
+
+    // Show notes if not "N/A"
+    if (currentProgramNotes && currentProgramNotes !== "N/A") {
+      notesElement.textContent = `Note: ${currentProgramNotes}`;
+    } else {
+      notesElement.textContent = "";
+    }
+  });
   </script>
 </body>
-</html
+</html>

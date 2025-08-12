@@ -1,0 +1,257 @@
+body {
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(249, 247, 243);
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; 
+    font-size: 19px; 
+    font-weight: 500; 
+    line-height: 26.4px; 
+    margin: 0; 
+    overflow-x: hidden;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+.profile-menu {
+    position: relative;
+    top: -5px;
+    right: 20px;
+    display: inline-block;
+}
+
+.profile-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid #ccc;
+    object-fit: cover;
+}
+
+.dropdown {
+    display: none;
+    position: absolute;
+    right: 0;
+    margin-top: 8px;
+    background-color: white;
+    min-width: 150px;
+    box-shadow: 0px 4px 8px rgba(0,0,0,0.15);
+    border-radius: 8px;
+    z-index: 10;
+}
+
+.profile-menu:hover .dropdown {
+    display: block;
+    animation: fadeDown 0.3s ease forwards;
+}
+
+.dropdown form {
+    margin: 0;
+}
+
+.dropdown button {
+    width: 100%;
+    padding: 10px;
+    background: none;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.dropdown button:hover {
+    background-color: #f2f2f2;
+}
+
+@keyframes fadeDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideUpFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  margin-left: 10px;
+  margin-right: 10px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+ul li {
+  margin-left: 20px;
+  list-style: none;
+}
+
+ul li:first-child {
+  margin-left: 0;
+  margin-right: auto;
+}
+
+li a {
+  position: relative;
+  color: gray;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  overflow: hidden;
+  display: inline-block;
+}
+
+li a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 2px;
+  height: 1px;
+  width: 0;
+  background-color: rgb(210, 180, 140);
+  transition: width 0.5s ease;
+}
+
+li a:hover::after {
+  width: 100%;
+}
+
+.active a {
+  color: black;
+  font-weight: 700;
+}
+
+.main-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 50px 200px; /* handles left/right spacing */
+    margin: 0;
+    gap: 50px; /* space between left and right */
+    border-left: none;
+    border-right: none;
+}
+
+.left-container {
+    flex: 0 0 400px;              
+    display: flex;
+    flex-direction: column;   
+    gap: 20px;                
+    align-items: flex-start;  
+    animation: slideUpFadeIn 0.6s ease forwards;
+}
+
+.right-container {
+    flex: 1;                      
+    display: flex;
+    flex-direction: column;
+    gap: 60px;               
+    align-items: flex-end;   
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: #333;
+    animation: slideUpFadeIn 0.6s ease forwards; 
+}
+
+
+.left-container {
+    padding-right: 200px; 
+    border-right: 1px solid #ccc; 
+}
+
+.right-container {
+    padding-left: 50px; 
+}
+
+.right-container div {
+  display: flex;
+  flex-direction: column; 
+  align-items: flex-end;  
+  font-size: 40px;
+}
+
+.right-container .value {
+  font-weight: 700;
+  color: rgb(210, 180, 140); 
+  margin-top: 14px;  
+  margin-left: 0;   
+}
+
+.button-pill {
+    background-color: #EFF5C8;
+    color:#5B7E35;
+    padding: 8px 18px;
+    border-radius: 999px;
+    border: none;
+    font-size: 24px;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+    text-transform: uppercase;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.main-title {
+    color: rgb(48, 48, 48);
+    font-weight: 900;      
+    font-size: 100px;  
+    margin-top: 40px;           
+    margin-bottom: 30px;       
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.sub-title {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 30px;
+}
+
+.search-button {
+    position: relative;
+    background-color: transparent; /* start transparent */
+    color: rgb(116, 48, 48);
+    padding: 8px 18px;
+    border-radius: 999px;
+    border: 2px solid rgb(116, 48, 48); /* optional border */
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+    text-transform: uppercase;
+    cursor: pointer;
+    display: inline-block;
+    overflow: hidden; /* hide overflow from sliding background */
+    z-index: 0; /* keep text above background */
+    font-size: 24px;
+}
+
+/* Sliding background */
+.search-button::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 0; /* starts with no fill */
+    background-color: rgb(222, 197, 172);
+    z-index: -1; /* put behind text */
+    transition: width 0.4s ease; /* smooth fill */
+}
+
+/* On hover: fill background from left to right */
+.search-button:hover::before {
+    width: 100%;
+}
