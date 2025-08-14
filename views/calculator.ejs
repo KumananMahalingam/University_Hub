@@ -3,11 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <title>Calculator</title>
+  <link rel="stylesheet" href="calculator_style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
+  <nav>
+    <ul>
+      <li><a class="active" href="/">Home</a></li>
+      <li><a href="/review">Review University</a></li>
+      <li><a href="/calculator">Admission Calculator</a></li>
+      <li><a href="/search">University Search</a></li>
+      <li class="profile-menu">
+        <img src="profile.png" alt="Profile" class="profile-icon">
+        <div class="dropdown">
+          <form action="/logout?_method=DELETE" method="POST">
+            <button type="submit">Log Out</button>
+          </form>
+        </div>
+      </li>
+    </ul>
+  </nav>
+
   <h1>Calculate Your Chances of Admission</h1>
-  <a href="/">Home</a>
 
   <div>
     <label for="university_select">Choose a University:</label>
@@ -26,17 +44,32 @@
       <option value="">--Please choose a university first--</option>
     </select>
   </div>
-
-  <canvas id="averagesChart" width="600" height="400" style="margin-top: 30px;"></canvas>
-
-  <br>
-  <div>
-    <label for="user_average">Enter Your Average:</label>
-    <input type="text" id="user_average" name="user_average"> 
+  <div class="calculator-flex-container">
+    
+    <div>
+      <canvas id="averagesChart" width="600" height="400" style="margin-top: 30px;"></canvas>
+    </div>
+    
+    <div class="ai-insight">
+      <div class="input-section">
+        <label for="user_average">Enter Your Average:</label>
+        <input type="text" id="user_average" name="user_average"> 
+        <button type="button" id="check_chances_btn">Check Chances</button>
+        <p id="result"></p>
+        <p id="notes" style="color:gray;"></p>
+      </div>
+    
+      <div id="ai-insight-box" class="ai-insight">
+        <h2>AI Admission Insight</h2>
+          <p id="loading-spinner" style="display: none;">
+            <i class="fas fa-star loading-star"></i>
+            Generating insight...
+          </p>
+        <p id="ai-insight-text">Enter your details above and click "Submit" to see insights.</p>
+      </div>
+    </div>
+    
   </div>
-  <button type="button" id="check_chances_btn">Check Chances</button>
-  <p id="result"></p>
-  <p id="notes" style="color:gray;"></p>
 
   <script>
     const majorsByUniversity = {
@@ -109,11 +142,16 @@
         }]
       },
       options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { labels: { font: { size: 16 } } },
+          title: { display: true, text: 'Admission Averages by Year', font: { size: 20 } }
+        },
         scales: {
-          y: {
-            beginAtZero: true,
-            max: 100
-          }
+          
+          x: { ticks: { font: { size: 14 } }, grid: { color: '#ddd' } },
+          y: { min:0, max:100, ticks: { font: { size: 14 } }, grid: { color: '#ddd' } }
         }
       }
     });
@@ -179,36 +217,76 @@
       }
     }
 
-  document.getElementById('check_chances_btn').addEventListener('click', () => {
-    const userAverage = parseFloat(document.getElementById('user_average').value);
-    const resultElement = document.getElementById('result');
-    const notesElement = document.getElementById('notes');
+    document.getElementById('check_chances_btn').addEventListener('click', async () => {
+      const university = document.getElementById('university_select').value;
+      const major = document.getElementById('major_select').value;
+      const userAverage = document.getElementById('user_average').value;
+      const programMean = currentProgramMean;
+      const resultElement = document.getElementById('result');
+      const notesElement = document.getElementById('notes');
+      const insightText = document.getElementById('ai-insight-text');
+      const loadingSpinner = document.getElementById('loading-spinner');
 
-    if (!currentProgramMean) {
-      resultElement.textContent = "Please select a university and major first.";
-      notesElement.textContent = "";
-      return;
-    }
+      // Initial validation checks
+      if (!currentProgramMean) {
+        resultElement.textContent = "Please select a university and major first.";
+        notesElement.textContent = "";
+        return;
+      }
 
-    if (isNaN(userAverage)) {
-      resultElement.textContent = "Please enter a valid number for your average.";
-      notesElement.textContent = "";
-      return;
-    }
+      if (isNaN(userAverage) || userAverage === "") {
+        resultElement.textContent = "Please enter a valid number for your average.";
+        notesElement.textContent = "";
+        return;
+      }
 
-    if (userAverage >= currentProgramMean) {
-      resultElement.textContent = `You have a good chance! Program mean is ${currentProgramMean.toFixed(2)}%.`;
-    } else {
-      resultElement.textContent = `It might be competitive. Program mean is ${currentProgramMean.toFixed(2)}%.`;
-    }
+      // Show basic chance
+      if (userAverage >= currentProgramMean) {
+        resultElement.textContent = `You have a good chance! Program mean is ${currentProgramMean.toFixed(2)}%.`;
+      } else {
+        resultElement.textContent = `It might be competitive. Program mean is ${currentProgramMean.toFixed(2)}%.`;
+      }
 
-    // Show notes if not "N/A"
-    if (currentProgramNotes && currentProgramNotes !== "N/A") {
-      notesElement.textContent = `Note: ${currentProgramNotes}`;
-    } else {
-      notesElement.textContent = "";
-    }
-  });
+      notesElement.textContent = currentProgramNotes && currentProgramNotes !== "N/A"
+        ? `Note: ${currentProgramNotes}`
+        : "";
+
+      // Show the spinner and hide the insight text before the fetch call
+      loadingSpinner.style.display = 'block';
+      insightText.style.display = 'none';
+
+      // Get the display text for the university and major dropdowns
+      const universityText = universitySelect.options[universitySelect.selectedIndex].text;
+      const majorText = majorSelect.options[majorSelect.selectedIndex].text;
+
+      // Call AI insight
+      try {
+        const res = await fetch('/ai-admission-insight', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            university: universityText, 
+            major: majorText, 
+            userAverage, 
+            programMean 
+          })
+        });
+
+        const data = await res.json();
+        
+        // Hide the spinner and show the new insight text on success
+        loadingSpinner.style.display = 'none';
+        insightText.style.display = 'block';
+        insightText.textContent = data.insight;
+      } catch (err) {
+        console.error(err);
+        
+        // Also hide the spinner and show an error message on failure
+        loadingSpinner.style.display = 'none';
+        insightText.style.display = 'block';
+        insightText.textContent = "AI insight generation failed. Please try again.";
+      }
+    });
   </script>
 </body>
 </html>

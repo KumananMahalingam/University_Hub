@@ -12,6 +12,8 @@ const methoOverried = require('method-override')
 const { Pool } = require('pg')
 const path = require('path')
 
+// Add the express.json() middleware here to parse JSON requests
+app.use(express.json()); 
 
 const pool = new Pool({
     user: 'kumananm',
@@ -35,7 +37,7 @@ initializePassport(
 )
 
 app.set('view engine', "ejs")
-app.use(express.urlencoded({ extended: false }))// tells app that we can take form results in req variables in post method
+app.use(express.urlencoded({ extended: false }))
 app.use(flash())
 app.use(express.static('view_styles'));
 app.use(session({
@@ -69,7 +71,7 @@ app.get('/register', checkNotAuthenticated, (req, res) => {
 
 app.post('/register', checkNotAuthenticated, async (req, res) => {
     try {
-        const hashedPassword = await bcrypt.hash(req.body.password, 10) //what the name field is in ejs file corresponds to what goes after body
+        const hashedPassword = await bcrypt.hash(req.body.password, 10)
         
         await pool.query (
             `INSERT INTO users (name, email, password) VALUES ($1, $2, $3)`,
@@ -528,5 +530,124 @@ app.get('/queens', async (req, res) => {
         res.status(500).send('Error fetching data');
     }
 })
+
+app.post("/ai-admission-insight", async (req, res) => {
+  const { university, major, userAverage, programMean } = req.body;
+
+  const prompt = `
+  You are an admission counselor AI. A student has an average of ${userAverage}% 
+  applying to ${major} at ${university}. 
+  The program's historical mean average is ${programMean}%. 
+  Give a personalized assessment of their chances and provide suggestions to improve their odds. 
+  Respond in 2-3 sentences in a friendly tone.
+  `;
+
+  // Correct way to access your API key from a .env file
+  const API_KEY = process.env.GEMINI_API_KEY; 
+
+  try {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        contents: [{
+          parts: [{
+            text: prompt
+          }]
+        }],
+      })
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        console.error("API error:", errorData);
+        throw new Error("API call failed");
+    }
+    
+    const data10 = await response.json();
+    // Correct way to parse the response for the Gemini API
+    const aiMessage = data10.candidates[0].content.parts[0].text; 
+    res.json({ insight: aiMessage });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "AI insight generation failed." });
+  }
+});
+
+app.get("/review/:id", (req, res) => {
+    const universityId = req.params.id;
+
+    if (!req.user) {
+        return res.redirect('/login');
+    }
+
+    const universities = {
+        1: "University of Waterloo",
+        2: "Western University",
+        3: "Queens University",
+        4: "University of Toronto"
+    };
+
+    res.render("reviewForm", {
+        universityId,
+        userId: req.user.id,
+        universityName: universities[universityId] || "Unknown University"
+    });
+});
+
+app.post('/submit-review', async (req, res) => {
+    // The data sent from the frontend is now available in req.body
+    const reviewData = req.body;
+
+    console.log('Received review data:', reviewData);
+
+    // SQL query to insert a new review into the 'reviews' table.
+    // We use parameterized queries ($1, $2, etc.) to prevent SQL injection.
+    const insertReviewQuery = `
+        INSERT INTO reviews (
+            user_id,
+            university_id,
+            rating,
+            body,
+            academics_rating,
+            food_rating,
+            safety_rating,
+            party_scene_rating,
+            student_life_rating,
+            location_rating
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+    `;
+
+    // An array of values to be inserted, matching the order of the placeholders in the query.
+    // The keys from the frontend form data are mapped directly to the database columns.
+    const values = [
+        reviewData.user_id,
+        reviewData.university_id,
+        reviewData.rating,
+        reviewData.body,
+        reviewData.academics_rating,
+        reviewData.food_rating,
+        reviewData.safety_rating,
+        reviewData.party_scene_rating,
+        reviewData.student_life_rating,
+        reviewData.location_rating,
+    ];
+
+    try {
+        // Execute the query using the connection pool.
+        await pool.query(insertReviewQuery, values);
+        
+        // Send a success response.
+        res.status(200).json({ message: 'Review successfully saved to database.' });
+
+    } catch (error) {
+        // If there's a problem with the database, send an error response.
+        console.error('Failed to save review to database:', error);
+        res.status(500).json({ error: 'Failed to save review. Please try again later.' });
+    }
+});
 
 app.listen(2000)
