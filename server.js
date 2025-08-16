@@ -294,12 +294,8 @@ app.get('/uwaterloo', async (req, res) => {
                 university_rating.safety AS safety,
                 university_rating.partying AS partying,
                 university_rating.cafeteria AS cafeteria,
-                university_rating.happiness AS happiness,
                 university_rating.residences AS residences,
-                university_rating.location AS location,
-                university_rating.diversity AS diversity, 
-                university_rating.affordability AS affordability,
-                university_rating.employability AS employability
+                university_rating.location AS location
             FROM university_rating
             JOIN university_information ON university_rating.university_id = university_information.id
             WHERE university_rating.university_id = $1

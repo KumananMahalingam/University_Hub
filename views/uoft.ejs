@@ -1,57 +1,111 @@
-<h1>UOFT</h1>
-<a href="/">Home</a>
-<pre><%= JSON.stringify(data, null, 2) %></pre>
+<head>
+    <link rel="stylesheet" href="university_search_subpages_style.css">
+</head>
 <body>
-    <% ratings.forEach(row => { %>
-        <%= row.university_name %>
-        <%= row.overall %>
-        <%= row.academics %>
-        <%= row.safety %>
-        <%= row.partying %>
-        <%= row.cafeteria %>
-        <%= row.happiness %>
-        <%= row.residences %>
-        <%= row.location %>
-        <%= row.diversity %>
-        <%= row.affordability %>
-        <%= row.employability %>
-        <br>
-    <% }) %>
-    <br>
-    <% data.forEach(row => { %>
-        <%= row.university_name %>
-        <%= row.major_name %>
-        <%= row.admission_average %>
-        $<%= row.tuition_cost %>
-        <%= row.books_supplies %>
-        <br>
-    <% }) %>
-    <br>
-    <% admissions.forEach(row => { %>
-        <%= row.university_name %>
-        <%= row.application_deadline %>
-        <%= row.application_fee %>
-        <%= row.overall_average %>
-        <%= row.website_url %>
-        <%= row.supplementary_application %>
-        <br>
-    <% }) %>
-    <br>
-    <% cost.forEach(row => { %>
-        <%= row.university_name %>
-        <%= row.average_cost %>
-        <%= row.average_housing_cost %>
-        <%= row.average_meal_plan_cost %>
-        <%= row.average_domestic_tuition %>
-        <%= row.average_international_cost %>
-        <br>
-    <% }) %>
-    <br>
-    <% grad.forEach(row => { %>
-        <%= row.university_name %>
-        <%= row.grad_rate %>
-        <%= row.median_income %>
-        <%= row.employment_rate %>
-        <br>
-    <% }) %>
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/search" class="active">Universities</a></li>
+            <li><a href="/review">Reviews</a></li>
+            <li><a href="/calculator">Programs</a></li>
+            <li class="profile-menu">
+                <img src="/profile.png" alt="Profile" class="profile-icon">
+                <div class="dropdown">
+                    <button>Profile</button>
+                    <button>Settings</button>
+                    <form action="/logout" method="post"><button type="submit">Logout</button></form>
+                </div>
+            </li>
+        </ul>
+    </nav>
+
+    <% const name = data[0].university_name; %>
+    <% const admissionAvg = data[0].admission_average; %>
+    <% const avgCost = cost[0].average_cost; %>
+    <% const website = admissions[0].website_url; %>
+    <% const gradRate = grad[0].grad_rate; %>
+
+    <% const overall_rating = ratings[0].overall; %>
+    <% const academics_rating = ratings[0].academics; %>
+    <% const safety_rating = ratings[0].safety; %>
+    <% const party_rating = ratings[0].partying; %>
+    <% const food_rating = ratings[0].cafeteria; %>
+    <% const location_rating = ratings[0].location; %>
+
+    <% const application_deadline = admissions[0].application_deadline; %>
+    <% const application_fee = admissions[0].application_fee; %>
+    <% const overall_average = admissions[0].overall_average; %>
+    <% const supplementary_application = admissions[0].supplementary_application; %>
+
+    <% const average_cost = cost[0].average_cost; %>
+    <% const average_housing_cost = cost[0].average_housing_cost; %>
+    <% const average_meal_plan_cost = cost[0].average_meal_plan_cost; %>
+    <% const average_domestic_tuition = cost[0].average_domestic_tuition; %>
+    <% const average_international_cost = cost[0].average_international_cost; %>
+    <% const books_supplies = data[0].books_supplies; %>
+
+    <% const employment_rate = grad[0].employment_rate; %>
+    <% const median_income = grad[0].median_income; %>
+
+    <div class="uni-info-box">
+        <p><strong>Average Admission Average:</strong> <%= admissionAvg %>%</p>
+        <p><strong>Average Yearly Cost:</strong> $<%= avgCost %></p>
+        <p><strong>Graduation Rate:</strong> <%= gradRate %></p>
+        <p><strong>Official Website:</strong> <a href="<%= website %>" target="_blank"><%= website %></a></p>
+    </div>
+
+    <div class="uni-info-box">
+        <p><strong>Overall:</strong> <%= overall_rating %></p>
+        <p><strong>Academics:</strong> <%= academics_rating %></p>
+        <p><strong>Safety:</strong> <%= safety_rating %></p>
+        <p><strong>Partying:</strong> <%= party_rating %></p>
+        <p><strong>Food:</strong> <%= food_rating %></p>
+        <p><strong>Location:</strong> <%= location_rating %></p>
+    </div>
+
+    <div class="uni-info-box">
+        <p><strong>Application Deadline:</strong> <%= application_deadline %></p>
+        <p><strong>Application Fee:</strong> <%= application_fee %></p>
+        <p><strong>Overall Average:</strong> <%= overall_average %></p>
+        <p><strong>Application Wesbite:</strong> <a href="<%= website %>" target="_blank"><%= website %></a></p>
+        <p><strong>Supplementary Application:</strong> <%= supplementary_application %></p>
+    </div>
+
+    <div class="uni-info-box">
+        <p><strong>Average Cost:</strong> <%= average_cost %></p>
+        <p><strong>Books & Supplies:</strong> <%= books_supplies %></p>
+        <p><strong>Average Housing Cost:</strong> <%= average_housing_cost %></p>
+        <p><strong>Average Meal Plan Cost:</strong> <%= average_meal_plan_cost %></p>
+        <p><strong>Average Domestic Tuition:</strong> <%= average_domestic_tuition %></p>
+        <p><strong>Average International Tuition:</strong> <%= average_international_cost %></p>
+    </div>
+
+    <div class="uni-major-box">
+        <ul>
+            <% data.forEach(row => { %>
+                <li><%= row.major_name %></li>
+            <% }) %>
+        </ul>
+    </div>
+    
+    <div class="uni-info-box">
+        <ul>
+            <% residences.forEach(row => { %>
+                <li>
+                    <strong>Name:</strong> <%= row.residence_name %>, 
+                    <strong>Room Type:</strong> <%= row.room_type %>, 
+                    <strong>Capacity:</strong> <%= row.capacity %>, 
+                    <strong>Price Range:</strong> <%= row.price_range %>, 
+                    <strong>Rating:</strong> <%= row.rating %>
+                </li>
+            <% }) %>
+        </ul>
+    </div>
+
+    <div class="uni-info-box">
+        <p><strong>Graduation Rate:</strong> <%= gradRate %></p>
+        <p><strong>Employment Rate:</strong> <%= employment_rate %></p>
+        <p><strong>Median Income:</strong> <%= median_income %></p>
+    </div>
+
 </body>

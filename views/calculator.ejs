@@ -8,22 +8,22 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <nav>
-    <ul>
-      <li><a class="active" href="/">Home</a></li>
-      <li><a href="/review">Review University</a></li>
-      <li><a href="/calculator">Admission Calculator</a></li>
-      <li><a href="/search">University Search</a></li>
-      <li class="profile-menu">
-        <img src="profile.png" alt="Profile" class="profile-icon">
-        <div class="dropdown">
-          <form action="/logout?_method=DELETE" method="POST">
-            <button type="submit">Log Out</button>
-          </form>
-        </div>
-      </li>
-    </ul>
-  </nav>
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/search" class="active">Universities</a></li>
+            <li><a href="/review">Reviews</a></li>
+            <li><a href="/calculator">Programs</a></li>
+            <li class="profile-menu">
+                <img src="/profile.png" alt="Profile" class="profile-icon">
+                <div class="dropdown">
+                    <button>Profile</button>
+                    <button>Settings</button>
+                    <form action="/logout" method="post"><button type="submit">Logout</button></form>
+                </div>
+            </li>
+        </ul>
+    </nav>
 
   <h1>Calculate Your Chances of Admission</h1>
 
@@ -138,7 +138,7 @@
         datasets: [{
           label: 'Admission Averages',
           data: new Array(labels.length).fill(0),
-          backgroundColor: 'rgba(54, 162, 235, 0.6)',
+          backgroundColor: '#4a90e2',
         }]
       },
       options: {
