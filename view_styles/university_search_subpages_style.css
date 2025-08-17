@@ -1,3 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;700&display=swap');
+
+/* General Body and Layout */
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #f0f2f5; /* Lighter background for better contrast */
+  color: #333;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+}
+
+.main-content {
+  padding: 2rem;
+  max-width: 800px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/*
+* Navbar Styling
+* This element is now correctly set to span the full width of the viewport
+* and stick to the very top.
+*/
 nav {
   width: 100%;
   background-color: #ffffff;
@@ -64,6 +88,10 @@ nav ul li.active a {
   pointer-events: none;
 }
 
+/*
+* Profile Dropdown Menu Fix
+* Removed the margin-top that created a gap, causing the dropdown to disappear.
+*/
 .profile-menu {
   position: relative;
   display: inline-block;
@@ -82,10 +110,10 @@ nav ul li.active a {
   display: none;
   position: absolute;
   right: 0;
-  margin-top: 8px;
+  /* Removed margin-top to eliminate the gap */
   background-color: white;
   min-width: 150px;
-  box-shadow: 0px 4px 8px rgba(0,0,0,0.15);
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
   border-radius: 8px;
   z-index: 10;
 }
@@ -99,6 +127,9 @@ nav ul li.active a {
   margin: 0;
 }
 
+/*
+* Dropdown buttons now fill the full width for easier clicking.
+*/
 .dropdown button {
   width: 100%;
   padding: 10px;
@@ -124,86 +155,316 @@ nav ul li.active a {
   }
 }
 
+.container-wrapper {
+    max-width: 800px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+h1 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1a237e; /* Deep blue for title */
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+a.home-link {
+    display: inline-block;
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease-in-out;
+    margin-bottom: 1rem;
+}
+
+a.home-link:hover {
+    color: #1d4ed8;
+    text-decoration: underline;
+}
+
+/* Reusable Card Styling */
 .uni-info-box {
   background: #fff;
-  border-radius: 16px; /* A close match to rounded-2xl */
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* Equivalent to shadow-lg */
-  border: 1px solid #e5e7eb; /* Adds the border-gray-200 effect */
-  padding: 24px; /* Matches the p-6 class */
-  max-width: 600px;
-  margin: 20px auto;
-  font-family: 'Inter', sans-serif; /* Matches the body font */
-  color: #333;
-}
-
-/* Styles for the data points within the grid */
-.uni-info-box .info-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-}
-
-.uni-info-box .info-item p:first-child {
-  font-size: 36px; /* Large font for the main data point */
-  font-weight: 700;
-  color: #4f46e5; /* A vibrant purple/blue to match indigo-600 */
-}
-
-.uni-info-box .info-item p:last-child {
-  font-size: 14px;
-  color: #6b7280; /* A dark gray to match gray-500 */
-}
-
-.uni-info-box a {
-  text-decoration: none;
-  color: #2563eb; /* A close match to blue-600 */
-  font-weight: 600;
-  transition: color 0.2s ease-in-out;
-}
-
-.uni-info-box a:hover {
-  text-decoration: underline;
-  color: #1d4ed8; /* A darker shade for hover effect */
-}
-
-.uni-major-box {
-  background: #fff;
   border-radius: 16px;
-  box-shadow: 0 8px 18px rgba(0,0,0,0.1);
-  padding: 20px 24px;
-  max-width: 600px;
-  margin: 20px auto;
-  font-family: "Helvetica Neue", Arial, sans-serif;
-  color: #333;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.08); /* More pronounced shadow */
+  padding: 24px;
+  margin: 24px auto;
+  color: #444;
+  transition: transform 0.3s ease-in-out;
 }
 
-.uni-major-box h2 {
+.uni-info-box:hover {
+    transform: translateY(-5px); /* Subtle lift on hover */
+}
+
+/* Headings within cards */
+.uni-info-box h2 {
+  font-family: 'Poppins', sans-serif;
   margin-top: 0;
-  margin-bottom: 12px;
-  font-size: 28px;
-  font-weight: 700;
+  margin-bottom: 16px;
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #3f51b5; /* Medium blue for section headings */
   text-align: center;
 }
 
-.uni-major-box ul {
-  list-style: none; /* Removes the default bullet points */
-  padding: 0;
+/* Specific styles for the Quick Facts grid layout */
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 24px;
+    text-align: center;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.info-item h3 {
+    font-size: 0.875rem;
+    color: #777;
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.info-item p {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #673ab7; /* Deep purple for data points */
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+/* General list styling for majors, residences, etc. */
+.uni-info-box ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.uni-info-box li {
+    padding: 12px 16px;
+    border-bottom: 1px solid #e0e0e0;
+    font-size: 1rem;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.uni-info-box li:last-child {
+    border-bottom: none;
+}
+
+.uni-info-box li:hover {
+    background-color: #e8eaf6; /* Light hover background */
+    cursor: pointer;
+}
+
+/* For bolded labels in lists */
+.uni-info-box strong {
+    color: #555;
+}
+
+/* New grid styles for the Residences card */
+.residence-grid {
+    display: grid;
+    grid-template-columns: 2fr 1.5fr 1fr 1.5fr 1fr;
+    align-items: center;
+    padding: 8px 0;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.residence-grid-header {
+    font-weight: 600;
+    color: #1a237e;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #3f51b5;
+    margin-bottom: 8px;
+}
+
+.residence-grid-row {
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.residence-grid-row:hover {
+    background-color: #e8eaf6;
+}
+
+.residence-grid-row:last-of-type {
+    border-bottom: none;
+}
+
+.rating-pill {
+  display: inline-block;
+  padding: 4px 10px;
+  background-color: #3f51b5;
+  color: #fff;
+  border-radius: 9px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.ratings-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  text-align: center;
+}
+
+.mini-rating-card {
+  background-color: #e8eaf6;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+}
+
+.mini-rating-card h3 {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #555;
+  margin-top: 0;
+  margin-bottom: 8px;
+}
+
+.mini-rating-card p {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #3f51b5;
   margin: 0;
 }
 
-.uni-major-box li {
-  padding: 8px 12px;
-  border-bottom: 1px solid #e5e7eb;
-  font-size: 16px;
-  transition: background-color 0.2s ease;
+/* Media query for smaller screens to make the ratings one column */
+@media (max-width: 600px) {
+  .ratings-grid {
+      grid-template-columns: 1fr;
+  }
 }
 
-.uni-major-box li:last-child {
-  border-bottom: none; /* Removes the border from the last item */
+.admissions-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Two columns for the main info */
+    gap: 16px;
+    align-items: center;
+    margin-bottom: 16px; /* Add space before the list */
 }
 
-.uni-major-box li:hover {
-  background-color: #f9fafb; /* Light hover effect for a modern feel */
+.important-info-card {
+    background-color: #e8eaf6;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    text-align: center;
 }
 
+.important-info-card h3 {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 8px;
+}
+
+.important-info-card p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #3f51b5;
+    margin: 0;
+}
+
+.green-pill {
+    display: inline-block;
+    padding: 4px 10px;
+    background-color: #a9faaa; /* A nice shade of green */
+    color: black;
+    border-radius: 12px;
+    font-weight: 500;
+    font-size: 0.875rem;
+    margin-left: 4px; /* Add some space from the label */
+}
+
+/* Media query for smaller screens */
+@media (max-width: 600px) {
+    .ratings-grid {
+        grid-template-columns: 1fr;
+    }
+    .admissions-grid {
+        grid-template-columns: 1fr; /* Single column for mobile */
+    }
+}
+
+.cost-bar-container {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.cost-bar-label {
+    min-width: 150px;
+    flex-shrink: 0;
+}
+
+.cost-bar-wrapper {
+    flex-grow: 1;
+    height: 25px; /* Increased height */
+    background-color: #f0f2f5;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.cost-bar {
+    height: 100%;
+    background-color: #673ab7; /* Deep purple to match data points */
+    border-radius: 5px;
+    transition: width 0.5s ease-in-out;
+    position: relative; /* For positioning the text */
+    display: flex; /* Allow for centering the text */
+    align-items: center;
+    justify-content: flex-end; /* Align value to the right */
+    padding-right: 10px;
+    box-sizing: border-box;
+}
+
+.cost-value {
+    color: #fff;
+    font-weight: bold;
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+.cost-bar-label + .cost-bar-wrapper {
+  flex-grow: 1;
+}
+
+/* Media query for smaller screens */
+@media (max-width: 600px) {
+    .ratings-grid {
+        grid-template-columns: 1fr;
+    }
+    .admissions-grid {
+        grid-template-columns: 1fr; /* Single column for mobile */
+    }
+    .cost-bar-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    .cost-bar-label {
+        min-width: auto;
+    }
+    .cost-bar-wrapper {
+        width: 100%;
+    }
+    .cost-value {
+        right: 8px;
+    }
+}

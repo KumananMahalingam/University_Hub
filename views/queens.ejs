@@ -31,6 +31,9 @@
     <% const party_rating = ratings4[0].partying; %>
     <% const food_rating = ratings4[0].cafeteria; %>
     <% const location_rating = ratings4[0].location; %>
+    <% const happiness_rating = ratings4[0].happiness; %>
+    <% const affordability_rating = ratings4[0].affordability; %>
+    <% const employability_rating = ratings4[0].employability; %>
 
     <% const application_deadline = admissions4[0].application_deadline; %>
     <% const application_fee = admissions4[0].application_fee; %>
@@ -47,65 +50,226 @@
     <% const employment_rate = grad4[0].employment_rate; %>
     <% const median_income = grad4[0].median_income; %>
 
-    <div class="uni-info-box">
-        <p><strong>Average Admission Average:</strong> <%= admissionAvg %>%</p>
-        <p><strong>Average Yearly Cost:</strong> $<%= avgCost %></p>
-        <p><strong>Graduation Rate:</strong> <%= gradRate %></p>
-        <p><strong>Official Website:</strong> <a href="<%= website %>" target="_blank"><%= website %></a></p>
-    </div>
+    <div class="container-wrapper">
+        <h1>Queens University</h1>
+        
+        <!-- Quick Facts Card -->
+        <div class="uni-info-box">
+            <h2>Quick Facts</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <h3>Avg. Admission</h3>
+                    <p><%= admissionAvg %>%</p>
+                </div>
+                <div class="info-item">
+                    <h3>Avg. Cost</h3>
+                    <p>$<%= avgCost %></p>
+                </div>
+                <div class="info-item">
+                    <h3>Graduation Rate</h3>
+                    <p><%= gradRate %></p>
+                </div>
+                <div class="info-item">
+                    <h3>Website</h3>
+                    <a href="<%= website %>" target="_blank" style="color: #673ab7; font-weight: 600; text-decoration: none;">Queens</a>
+                </div>
+            </div>
+        </div>
 
-    <div class="uni-info-box">
-        <p><strong>Overall:</strong> <%= overall_rating %></p>
-        <p><strong>Academics:</strong> <%= academics_rating %></p>
-        <p><strong>Safety:</strong> <%= safety_rating %></p>
-        <p><strong>Partying:</strong> <%= party_rating %></p>
-        <p><strong>Food:</strong> <%= food_rating %></p>
-        <p><strong>Location:</strong> <%= location_rating %></p>
-    </div>
+        <div class="uni-info-box">
+            <h2>Student Ratings</h2>
+            <div class="ratings-grid">
+                <div class="mini-rating-card">
+                    <h3>Overall</h3>
+                    <p><%= overall_rating %></p>
+                </div>
+                <div class="mini-rating-card">
+                    <h3>Academics</h3>
+                    <p><%= academics_rating %></p>
+                </div>
+                <div class="mini-rating-card">
+                    <h3>Safety</h3>
+                    <p><%= safety_rating %></p>
+                </div>
+                <div class="mini-rating-card">
+                    <h3>Partying</h3>
+                    <p><%= party_rating %></p>
+                </div>
+                <div class="mini-rating-card">
+                    <h3>Food</h3>
+                    <p><%= food_rating %></p>
+                </div>
+                <div class="mini-rating-card">
+                    <h3>Location</h3>
+                    <p><%= location_rating %></p>
+                </div>
+                <div class="mini-rating-card">
+                    <h3>Happiness</h3>
+                    <p><%= happiness_rating %></p>
+                </div>
+                <div class="mini-rating-card">
+                    <h3>Affordability</h3>
+                    <p><%= affordability_rating %></p>
+                </div>
+                <div class="mini-rating-card">
+                    <h3>Employability</h3>
+                    <p><%= employability_rating %></p>
+                </div>
+            </div>
+        </div>
 
-    <div class="uni-info-box">
-        <p><strong>Application Deadline:</strong> <%= application_deadline %></p>
-        <p><strong>Application Fee:</strong> <%= application_fee %></p>
-        <p><strong>Overall Average:</strong> <%= overall_average %></p>
-        <p><strong>Application Wesbite:</strong> <a href="<%= website %>" target="_blank"><%= website %></a></p>
-        <p><strong>Supplementary Application:</strong> <%= supplementary_application %></p>
-    </div>
-
-    <div class="uni-info-box">
-        <p><strong>Average Cost:</strong> <%= average_cost %></p>
-        <p><strong>Books & Supplies:</strong> <%= books_supplies %></p>
-        <p><strong>Average Housing Cost:</strong> <%= average_housing_cost %></p>
-        <p><strong>Average Meal Plan Cost:</strong> <%= average_meal_plan_cost %></p>
-        <p><strong>Average Domestic Tuition:</strong> <%= average_domestic_tuition %></p>
-        <p><strong>Average International Tuition:</strong> <%= average_international_cost %></p>
-    </div>
-
-    <div class="uni-major-box">
-        <ul>
-            <% data4.forEach(row => { %>
-                <li><%= row.major_name %></li>
-            <% }) %>
-        </ul>
-    </div>
-    
-    <div class="uni-info-box">
-        <ul>
-            <% residences4.forEach(row => { %>
+        <!-- Admissions Card -->
+        <div class="uni-info-box">
+            <h2>Admissions</h2>
+            <div class="admissions-grid">
+                <!-- Most important fields, styled as mini-cards -->
+                <div class="important-info-card">
+                    <h3>Application Deadline</h3>
+                    <p><%= application_deadline %></p>
+                </div>
+                <div class="important-info-card">
+                    <h3>Overall Average</h3>
+                    <p><%= overall_average %>%</p>
+                </div>
+            </div>
+            <ul>
                 <li>
-                    <strong>Name:</strong> <%= row.residence_name %>, 
-                    <strong>Room Type:</strong> <%= row.room_type %>, 
-                    <strong>Capacity:</strong> <%= row.capacity %>, 
-                    <strong>Price Range:</strong> <%= row.price_range %>, 
-                    <strong>Rating:</strong> <%= row.rating %>
+                    <strong>Application Fee:</strong> 
+                    <span class="green-pill">$<%= application_fee %></span>
                 </li>
+                <li><strong>Application Website:</strong> <a href="<%= website %>" target="_blank" style="color: #673ab7; font-weight: 600; text-decoration: none;">Queens</a></li>
+                <li><strong>Supplementary Application:</strong> Yes (highly considered)</li>
+            </ul>
+        </div>
+
+        <!-- Cost of Living Card -->
+        <div class="uni-info-box">
+            <h2>Cost of Living</h2>
+            <ul>
+                <li class="cost-bar-container">
+                    <strong class="cost-bar-label">Average Cost:</strong>
+                    <div class="cost-bar-wrapper">
+                        <div class="cost-bar" data-cost="<%= average_cost %>">
+                            <span class="cost-value">$<%= average_cost %></span>
+                        </div>
+                    </div>
+                </li>
+                <li class="cost-bar-container">
+                    <strong class="cost-bar-label">Average Housing Cost:</strong>
+                    <div class="cost-bar-wrapper">
+                        <div class="cost-bar" data-cost="<%= average_housing_cost %>">
+                             <span class="cost-value">$<%= average_housing_cost %></span>
+                        </div>
+                    </div>
+                </li>
+                <li class="cost-bar-container">
+                    <strong class="cost-bar-label">Average Meal Plan Cost:</strong>
+                    <div class="cost-bar-wrapper">
+                        <div class="cost-bar" data-cost="<%= average_meal_plan_cost %>">
+                             <span class="cost-value">$<%= average_meal_plan_cost %></span>
+                        </div>
+                    </div>
+                </li>
+                <li class="cost-bar-container">
+                    <strong class="cost-bar-label">Average Domestic Tuition:</strong>
+                    <div class="cost-bar-wrapper">
+                        <div class="cost-bar" data-cost="<%= average_domestic_tuition %>">
+                             <span class="cost-value">$<%= average_domestic_tuition %></span>
+                        </div>
+                    </div>
+                </li>
+                <li class="cost-bar-container">
+                    <strong class="cost-bar-label">Average International Tuition:</strong>
+                    <div class="cost-bar-wrapper">
+                        <div class="cost-bar" data-cost="<%= average_international_cost %>">
+                             <span class="cost-value">$<%= average_international_cost %></span>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Popular Majors Card -->
+        <div class="uni-info-box">
+            <h2>Popular Majors</h2>
+            <ul>
+                <% data4.forEach(row => { %>
+                    <li><%= row.major_name %></li>
+                <% }) %>
+            </ul>
+        </div>
+
+        <!-- Residences Card with Grid Layout -->
+        <div class="uni-info-box">
+            <h2>Residences</h2>
+            <div class="residence-grid residence-grid-header">
+                <span>Name</span>
+                <span>Room Type</span>
+                <span>Capacity</span>
+                <span>Price Range</span>
+                <span>Rating</span>
+            </div>
+            <% residences4.forEach(row => { %>
+                <div class="residence-grid residence-grid-row">
+                    <span><%= row.residence_name %></span>
+                    <span><%= row.room_type %></span>
+                    <span><%= row.capacity %></span>
+                    <span><%= row.price_range %></span>
+                    <span><span class="rating-pill"><%= row.rating %></span></span>
+                </div>
             <% }) %>
-        </ul>
+        </div>
+
+        <!-- Post-Graduation Statistics Card -->
+        <div class="uni-info-box">
+            <h2>Post-Graduation</h2>
+            <ul>
+                <li><strong>Graduation Rate:</strong> <%= gradRate %></li>
+                <li><strong>Employment Rate:</strong> <%= employment_rate %></li>
+                <li><strong>Median Income:</strong> $<%= median_income %></li>
+            </ul>
+        </div>
     </div>
 
-    <div class="uni-info-box">
-        <p><strong>Graduation Rate:</strong> <%= gradRate %></p>
-        <p><strong>Employment Rate:</strong> <%= employment_rate %></p>
-        <p><strong>Median Income:</strong> <%= median_income %></p>
-    </div>
+    <script>
+        // This script runs after the HTML has been parsed by the browser.
+        window.onload = function() {
+            // Get all the cost bars by their class name
+            const costBars = document.querySelectorAll('.cost-bar');
+
+            // Set a maximum value to scale all the bars against.
+            // This is the largest value in our dataset, which is the international tuition cost.
+            const maxValue = 45000; 
+            const minWidthPx = 80; // Minimum width for the bar to hold the text
+
+            costBars.forEach(bar => {
+                // Get the numerical cost value from the data attribute
+                const cost = parseInt(bar.dataset.cost.replace(/,/g, ''), 10);
+                
+                // Calculate the percentage width
+                let percentage = (cost / maxValue) * 100;
+                
+                // Apply a max width cap to the longest bar to ensure the text doesn't overflow
+                if (percentage > 95) {
+                    percentage = 95;
+                }
+
+                // Apply the calculated width to the element's style
+                bar.style.width = `${percentage}%`;
+
+                // Check if the calculated width is too small for the text
+                const parentWidth = bar.parentElement.offsetWidth;
+                const calculatedWidthPx = parentWidth * (percentage / 100);
+
+                if (calculatedWidthPx < minWidthPx) {
+                    bar.style.minWidth = `${minWidthPx}px`; // Force a minimum width
+                    bar.classList.add('dark-text'); // Add a class to change text color
+                } else {
+                    bar.style.minWidth = ''; // Reset min-width
+                    bar.classList.remove('dark-text'); // Remove the class
+                }
+            });
+        };
+    </script>
 
 </body>
