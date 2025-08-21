@@ -19,7 +19,7 @@
                 <div class="dropdown">
                     <button>Profile</button>
                     <button>Settings</button>
-                    <form action="/logout" method="post"><button type="submit">Logout</button></form>
+                    <form action="/login" method="post"><button type="submit">Logout</button></form>
                 </div>
             </li>
         </ul>
@@ -227,7 +227,6 @@
       const insightText = document.getElementById('ai-insight-text');
       const loadingSpinner = document.getElementById('loading-spinner');
 
-      // Initial validation checks
       if (!currentProgramMean) {
         resultElement.textContent = "Please select a university and major first.";
         notesElement.textContent = "";
@@ -240,7 +239,6 @@
         return;
       }
 
-      // Show basic chance
       if (userAverage >= currentProgramMean) {
         resultElement.textContent = `You have a good chance! Program mean is ${currentProgramMean.toFixed(2)}%.`;
       } else {
@@ -251,15 +249,12 @@
         ? `Note: ${currentProgramNotes}`
         : "";
 
-      // Show the spinner and hide the insight text before the fetch call
       loadingSpinner.style.display = 'block';
       insightText.style.display = 'none';
 
-      // Get the display text for the university and major dropdowns
       const universityText = universitySelect.options[universitySelect.selectedIndex].text;
       const majorText = majorSelect.options[majorSelect.selectedIndex].text;
 
-      // Call AI insight
       try {
         const res = await fetch('/ai-admission-insight', {
           method: 'POST',
@@ -274,14 +269,12 @@
 
         const data = await res.json();
         
-        // Hide the spinner and show the new insight text on success
         loadingSpinner.style.display = 'none';
         insightText.style.display = 'block';
         insightText.textContent = data.insight;
       } catch (err) {
         console.error(err);
         
-        // Also hide the spinner and show an error message on failure
         loadingSpinner.style.display = 'none';
         insightText.style.display = 'block';
         insightText.textContent = "AI insight generation failed. Please try again.";

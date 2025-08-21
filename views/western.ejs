@@ -13,7 +13,7 @@
                 <div class="dropdown">
                     <button>Profile</button>
                     <button>Settings</button>
-                    <form action="/logout" method="post"><button type="submit">Logout</button></form>
+                    <form action="/login" method="post"><button type="submit">Logout</button></form>
                 </div>
             </li>
         </ul>
@@ -122,7 +122,6 @@
         <div class="uni-info-box">
             <h2>Admissions</h2>
             <div class="admissions-grid">
-                <!-- Most important fields, styled as mini-cards -->
                 <div class="important-info-card">
                     <h3>Application Deadline</h3>
                     <p><%= application_deadline %></p>
@@ -232,41 +231,32 @@
     </div>
 
     <script>
-        // This script runs after the HTML has been parsed by the browser.
         window.onload = function() {
-            // Get all the cost bars by their class name
             const costBars = document.querySelectorAll('.cost-bar');
 
-            // Set a maximum value to scale all the bars against.
-            // This is the largest value in our dataset, which is the international tuition cost.
             const maxValue = 45000; 
-            const minWidthPx = 80; // Minimum width for the bar to hold the text
+            const minWidthPx = 80; 
 
             costBars.forEach(bar => {
-                // Get the numerical cost value from the data attribute
                 const cost = parseInt(bar.dataset.cost.replace(/,/g, ''), 10);
-                
-                // Calculate the percentage width
+
                 let percentage = (cost / maxValue) * 100;
                 
-                // Apply a max width cap to the longest bar to ensure the text doesn't overflow
                 if (percentage > 95) {
                     percentage = 95;
                 }
 
-                // Apply the calculated width to the element's style
                 bar.style.width = `${percentage}%`;
 
-                // Check if the calculated width is too small for the text
                 const parentWidth = bar.parentElement.offsetWidth;
                 const calculatedWidthPx = parentWidth * (percentage / 100);
 
                 if (calculatedWidthPx < minWidthPx) {
-                    bar.style.minWidth = `${minWidthPx}px`; // Force a minimum width
-                    bar.classList.add('dark-text'); // Add a class to change text color
+                    bar.style.minWidth = `${minWidthPx}px`;
+                    bar.classList.add('dark-text'); 
                 } else {
-                    bar.style.minWidth = ''; // Reset min-width
-                    bar.classList.remove('dark-text'); // Remove the class
+                    bar.style.minWidth = ''; 
+                    bar.classList.remove('dark-text'); 
                 }
             });
         };
