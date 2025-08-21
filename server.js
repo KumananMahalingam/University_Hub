@@ -167,6 +167,23 @@ app.post('/review', async (req, res) => {
     }
 });
 
+app.get('/api/reviews/:universityId', async (req, res) => {
+    const { universityId } = req.params;
+    try {
+        const result = await pool.query(
+            `SELECT id, university_id, rating, academics_rating, safety_rating, 
+                    party_scene_rating, food_rating, location_rating, body
+             FROM reviews
+             WHERE university_id = $1`,
+            [universityId]
+        );
+        res.json(result.rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to fetch reviews' });
+    }
+});
+
 app.get('/uoft', async (req, res) => {
     try {
         const result = await pool.query(`

@@ -12,7 +12,7 @@
         <li><a class="active" href="/">Home</a></li>
         <li><a href="/search" class="active">Universities</a></li>
         <li><a href="/review">Reviews</a></li>
-        <li><a href="/calculator">Programs</a></li>
+        <li><a href="/calculator">Calculator</a></li>
         <li class="profile-menu">
             <img src="profile.png" alt="Profile" class="profile-icon">
             <div class="dropdown">
@@ -38,23 +38,91 @@
                 </select>
             </div>
             
-            <button id="review_btn" type="button" class="button">
-                Go to Review Page
-            </button>
+            <div style="display: flex; gap: 10px;">
+                <button id="go-to-review-btn" type="button" class="button" style="width: 50%;">
+                    Go to Review Page
+                </button>
+                <button id="view-reviews-btn" type="button" class="button" style="width: 50%;">
+                    View Reviews
+                </button>
+            </div>
         </form>
+
+        <div id="message-box" class="message-box"></div>
+
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const reviewButton = document.getElementById('review_btn');
+            const goToReviewBtn = document.getElementById('go-to-review-btn');
+            const viewReviewsBtn = document.getElementById('view-reviews-btn');
             const universitySelect = document.getElementById('university_select');
 
-            reviewButton.addEventListener('click', () => {
+            const displayMessage = (message, isError = false) => {
+                const messageBox = document.getElementById('message-box');
+                messageBox.textContent = message;
+                messageBox.style.display = 'block';
+                messageBox.style.backgroundColor = isError ? '#ffcccc' : '#ccffcc';
+                messageBox.style.color = isError ? '#ff0000' : '#006600';
+                setTimeout(() => {
+                    messageBox.style.display = 'none';
+                }, 3000);
+            };
+
+            goToReviewBtn.addEventListener('click', () => {
                 const universityId = universitySelect.value;
                 if (universityId) {
                     window.location.href = `/review/${universityId}`;
                 } else {
-                    alert('Please select a university before proceeding.');
+                    displayMessage('Please select a university before proceeding.', true);
+                }
+            });
+
+            viewReviewsBtn.addEventListener('click', async () => {
+                const universityId = universitySelect.value;
+                if (!universityId) {
+                    displayMessage('Please select a university to view reviews.', true);
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`/api/reviews/${universityId}`);
+                    const reviews = await response.json();
+
+                    const reviewsContainer = document.createElement('div');
+                    reviewsContainer.classList.add('reviews-container');
+
+                    if (reviews.length === 0) {
+                        reviewsContainer.innerHTML = '<p>No reviews available for this university yet.</p>';
+                    } else {
+                        reviews.forEach(review => {
+                            const reviewBox = document.createElement('div');
+                            reviewBox.classList.add('review-box');
+                            reviewBox.innerHTML = `
+                                <div class="rating-grid">
+                                    <div class="rating-item"><strong>Overall:</strong> <span class="rating-value">${review.rating} ⭐</span></div>
+                                    <div class="rating-item"><strong>Academics:</strong> <span class="rating-value">${review.academics_rating} ⭐</span></div>
+                                    <div class="rating-item"><strong>Safety:</strong> <span class="rating-value">${review.safety_rating} ⭐</span></div>
+                                    <div class="rating-item"><strong>Partying:</strong> <span class="rating-value">${review.party_scene_rating} ⭐</span></div>
+                                    <div class="rating-item"><strong>Food:</strong> <span class="rating-value">${review.food_rating} ⭐</span></div>
+                                    <div class="rating-item"><strong>Location:</strong> <span class="rating-value">${review.location_rating} ⭐</span></div>
+                                </div>
+                                <div class="comment-section">
+                                    <strong>Comment:</strong>
+                                    <p>${review.body || 'No comment provided.'}</p>
+                                </div>
+                            `;
+                            reviewsContainer.appendChild(reviewBox);
+                        });
+                    }
+
+                    const oldContainer = document.querySelector('.reviews-container');
+                    if (oldContainer) oldContainer.remove();
+
+                    document.querySelector('.container').appendChild(reviewsContainer);
+                } catch (err) {
+                    console.error(err);
+                    displayMessage('Error fetching reviews.', true);
                 }
             });
         });

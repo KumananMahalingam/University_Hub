@@ -12,7 +12,7 @@
             <li><a href="/">Home</a></li>
             <li><a href="/search" class="active">Universities</a></li>
             <li><a href="/review">Reviews</a></li>
-            <li><a href="/calculator">Programs</a></li>
+            <li><a href="/calculator">Calculator</a></li>
             <li class="profile-menu">
                 <img src="/profile.png" alt="Profile" class="profile-icon">
                 <div class="dropdown">
@@ -29,7 +29,6 @@
     <div class="cards-wrapper">
       <% data5.forEach(row => { %>
         <%
-        // Map each university name to its image path or URL
         const images = {
         'University of Toronto': 'night.jpg',
         'University of Waterloo': 'orange_city.jpg',
@@ -46,7 +45,7 @@
           else url = row.name.toLowerCase().replace(/\s+/g, '');
         %>
         <a href="/<%= url %>" class="card" aria-label="<%= row.name %>">
-          <img src="<%= images[row.name] || 'https://via.placeholder.com/280x160?text=University+Image' %>" alt="<%= row.name %> Image" />
+          <img src="<%= images[row.name] %>" alt="<%= row.name %> Image" />
           <div class="card-content">
             <div class="university-name"><%= row.name %></div>
             <div class="badges">

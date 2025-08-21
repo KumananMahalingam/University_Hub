@@ -1,35 +1,31 @@
-/* General body and font styles */
 body {
     font-family: 'Inter', sans-serif;
-    background-color: #f3f4f6; /* Light gray background */
+    background-color: #f3f4f6; 
     display: flex;
     flex-direction: column;
     min-height: 100vh;
     margin: 0;
 }
 
-/* Main container styling for the form box */
 .container {
     width: 90%;
     max-width: 600px;
     background-color: #ffffff;
     padding: 2rem;
-    border-radius: 1rem; /* 16px */
+    border-radius: 1rem; 
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
     border: 1px solid #e5e7eb;
-    margin: auto; /* Centers the container vertically and horizontally */
+    margin: auto; 
 }
 
-/* Heading styling */
 h1 {
-    font-size: 2rem; /* 32px */
+    font-size: 2rem; 
     font-weight: 700;
     color: #1f2937;
     margin-bottom: 1.5rem;
     text-align: center;
 }
 
-/* Form element spacing */
 form {
     display: flex;
     flex-direction: column;
@@ -38,13 +34,12 @@ form {
 
 label {
     display: block;
-    font-size: 0.875rem; /* 14px */
+    font-size: 0.875rem;
     font-weight: 500;
     color: #374151;
     margin-bottom: 0.5rem;
 }
 
-/* Dropdown select box styling */
 select {
     width: 100%;
     padding: 0.5rem 2.5rem 0.5rem 0.75rem;
@@ -66,7 +61,6 @@ select:focus {
     box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
 }
 
-/* Button styling */
 .button {
     width: 100%;
     display: flex;
@@ -91,7 +85,6 @@ select:focus {
     box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.5);
 }
 
-/* Navigation bar styling */
 nav {
     width: 100%;
     background-color: #ffffff;
@@ -117,7 +110,7 @@ nav ul li {
 
 nav ul li:first-child {
     margin-left: 0;
-    margin-right: auto; /* Pushes the first item to the left */
+    margin-right: auto; 
 }
 
 nav ul li a {
@@ -143,7 +136,7 @@ nav ul li a::after {
 }
 
 nav ul li a:hover {
-    color: #a67c52; /* warm goldish color */
+    color: #a67c52; 
     transform: scale(1.05);
     transition: transform 0.3s ease, color 0.3s ease;
 }
@@ -216,4 +209,80 @@ nav ul li.active a {
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+.reviews-container {
+    margin-top: 30px;
+    display: grid;
+    gap: 20px;
+}
+
+.review-box {
+    background-color: #f9f9f9;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e0e0e0;
+    transition: transform 0.2s ease-in-out;
+}
+
+.review-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.review-box p {
+    margin: 5px 0;
+    font-size: 1rem;
+}
+
+.review-box p strong {
+    color: #1a237e;
+    font-weight: 600;
+}
+
+.review-box .rating-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.rating-grid .rating-item {
+    font-size: 0.95rem;
+    color: #555;
+}
+
+.rating-grid .rating-item strong {
+    color: #333;
+}
+
+.rating-grid .rating-value {
+    font-weight: 700;
+    color: #3f51b5;
+}
+
+.review-box .comment-section {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.comment-section strong {
+    font-size: 1.1rem;
+}
+
+.comment-section p {
+    font-style: italic;
+    color: #666;
+}
+
+.message-box {
+    background-color: #ffcccc;
+    border: 1px solid #ff0000;
+    color: #ff0000;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-top: 1rem;
+    display: none;
 }
