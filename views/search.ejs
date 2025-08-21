@@ -37,6 +37,7 @@
         };
         %>
         <% 
+        /* Create variable url, if row.name is equal to a certain university, it will be used in the url */
           let url;
           if(row.name === 'University of Toronto') url = 'uoft';
           else if(row.name === 'University of Waterloo') url = 'uwaterloo';

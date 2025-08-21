@@ -1,3 +1,4 @@
+/* Use dotenv library to find env file in project directory */
 if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config()
 }
@@ -558,7 +559,7 @@ app.post("/ai-admission-insight", async (req, res) => {
   Respond in 2-3 sentences in a friendly tone.
   `;
 
-  // Correct way to access your API key from a .env file
+  // Accessing my API key from a .env file
   const API_KEY = process.env.GEMINI_API_KEY; 
 
   try {
@@ -583,7 +584,7 @@ app.post("/ai-admission-insight", async (req, res) => {
     }
     
     const data10 = await response.json();
-    // Correct way to parse the response for the Gemini API
+    // Parsing the response of the API
     const aiMessage = data10.candidates[0].content.parts[0].text; 
     res.json({ insight: aiMessage });
 
@@ -620,8 +621,6 @@ app.post('/submit-review', async (req, res) => {
 
     console.log('Received review data:', reviewData);
 
-    // SQL query to insert a new review into the 'reviews' table.
-    // We use parameterized queries ($1, $2, etc.) to prevent SQL injection.
     const insertReviewQuery = `
         INSERT INTO reviews (
             user_id,
@@ -637,8 +636,6 @@ app.post('/submit-review', async (req, res) => {
         ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
     `;
 
-    // An array of values to be inserted, matching the order of the placeholders in the query.
-    // The keys from the frontend form data are mapped directly to the database columns.
     const values = [
         reviewData.user_id,
         reviewData.university_id,
@@ -653,14 +650,12 @@ app.post('/submit-review', async (req, res) => {
     ];
 
     try {
-        // Execute the query using the connection pool.
+        // Execute the query using the connection pool
         await pool.query(insertReviewQuery, values);
-        
-        // Send a success response.
+
         res.status(200).json({ message: 'Review successfully saved to database.' });
 
     } catch (error) {
-        // If there's a problem with the database, send an error response.
         console.error('Failed to save review to database:', error);
         res.status(500).json({ error: 'Failed to save review. Please try again later.' });
     }

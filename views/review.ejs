@@ -62,6 +62,7 @@
                 const messageBox = document.getElementById('message-box');
                 messageBox.textContent = message;
                 messageBox.style.display = 'block';
+                // Use ternary operator to check if error has occurred and reset formatting for messageBox
                 messageBox.style.backgroundColor = isError ? '#ffcccc' : '#ccffcc';
                 messageBox.style.color = isError ? '#ff0000' : '#006600';
                 setTimeout(() => {
@@ -95,6 +96,7 @@
                     if (reviews.length === 0) {
                         reviewsContainer.innerHTML = '<p>No reviews available for this university yet.</p>';
                     } else {
+                        // for each review in the db creates a div element and formats its contents 
                         reviews.forEach(review => {
                             const reviewBox = document.createElement('div');
                             reviewBox.classList.add('review-box');
