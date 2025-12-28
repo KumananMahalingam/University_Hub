@@ -14,34 +14,57 @@ const { Pool } = require('pg')
 const path = require('path')
 
 // Add the express.json() middleware here to parse JSON requests
-app.use(express.json()); 
+app.use(express.json());
 
-// AWS RDS PostgreSQL connection with SSL
+// AWS RDS PostgreSQL connection with improved SSL configuration
 const pool = new Pool({
     user: process.env.DB_USER || 'kumananm',
     host: process.env.DB_HOST || 'localhost',
     database: process.env.DB_NAME || 'login',
     password: process.env.DB_PASSWORD,
     port: process.env.DB_PORT || 5432,
-    // SSL configuration for RDS
+    // Improved SSL configuration for RDS
     ssl: process.env.NODE_ENV === 'production' ? {
-        rejectUnauthorized: false
+        rejectUnauthorized: false,
+        // Add timeout for SSL handshake
+        timeout: 10000
     } : false,
     // Connection pool settings for better performance
     max: 20,
     idleTimeoutMillis: 30000,
-    connectionTimeoutMillis: 2000,
+    connectionTimeoutMillis: 10000, // Increased from 2000
+    // Retry logic
+    connectionTimeoutRetries: 3
 })
 
-// Test database connection
-pool.connect((err, client, release) => {
-    if (err) {
-        console.error('Error connecting to database:', err.stack)
-    } else {
+// Improved database connection with retry logic
+let dbConnected = false;
+
+async function testDatabaseConnection() {
+    try {
+        const client = await pool.connect()
         console.log('Successfully connected to database')
-        release()
+        await client.query('SELECT NOW()') // Test query
+        dbConnected = true
+        client.release()
+        return true
+    } catch (err) {
+        console.error('Error connecting to database:', err.stack)
+        dbConnected = false
+        return false
     }
-})
+}
+
+// Test connection on startup
+testDatabaseConnection()
+
+// Retry connection every 30 seconds if it fails
+setInterval(async () => {
+    if (!dbConnected) {
+        console.log('Retrying database connection...')
+        await testDatabaseConnection()
+    }
+}, 30000)
 
 const initializePassport = require('./passport-config')
 initializePassport(passport, pool)
@@ -68,9 +91,44 @@ app.use(passport.session())
 app.use(methoOverried('_method'))
 app.use(express.static(path.join('')))
 
-// Health check endpoint for ALB/ECS
-app.get('/health', (req, res) => {
-    res.status(200).json({ status: 'healthy' })
+// IMPROVED Health check endpoint for ALB/ECS - CRITICAL FIX
+app.get('/health', async (req, res) => {
+    try {
+        // Check if database is connected
+        if (!dbConnected) {
+            return res.status(503).json({
+                status: 'unhealthy',
+                reason: 'Database not connected'
+            })
+        }
+
+        // Perform a quick database query to verify connection
+        const client = await pool.connect()
+        await client.query('SELECT 1')
+        client.release()
+
+        res.status(200).json({
+            status: 'healthy',
+            timestamp: new Date().toISOString(),
+            database: 'connected'
+        })
+    } catch (err) {
+        console.error('Health check failed:', err)
+        res.status(503).json({
+            status: 'unhealthy',
+            reason: 'Database query failed',
+            error: err.message
+        })
+    }
+})
+
+// Add a readiness check endpoint (optional but recommended)
+app.get('/ready', async (req, res) => {
+    if (dbConnected) {
+        res.status(200).json({ status: 'ready' })
+    } else {
+        res.status(503).json({ status: 'not ready' })
+    }
 })
 
 app.get('/', checkAuthenticated, (req, res) => {
@@ -94,7 +152,7 @@ app.get('/register', checkNotAuthenticated, (req, res) => {
 app.post('/register', checkNotAuthenticated, async (req, res) => {
     try {
         const hashedPassword = await bcrypt.hash(req.body.password, 10)
-        
+
         await pool.query (
             `INSERT INTO users (name, email, password) VALUES ($1, $2, $3)`,
             [req.body.name, req.body.email, hashedPassword]
@@ -110,7 +168,7 @@ app.post('/register', checkNotAuthenticated, async (req, res) => {
 function checkAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
         return next()
-    } 
+    }
 
     res.redirect('/login')
 }
@@ -173,7 +231,7 @@ app.get('/review', (req, res) => {
 app.post('/review', async (req, res) => {
     try {
         const { university_id, rating } = req.body;
-        const user_id = req.user.id; 
+        const user_id = req.user.id;
         const body = req.body.body;
         const title = req.body.name;
 
@@ -182,7 +240,7 @@ app.post('/review', async (req, res) => {
             [user_id, university_id, rating, title, body]
         );
 
-        res.redirect('/review'); 
+        res.redirect('/review');
         console.log(req.body)
     } catch (err) {
         console.error('Error saving review', err);
@@ -194,7 +252,7 @@ app.get('/api/reviews/:universityId', async (req, res) => {
     const { universityId } = req.params;
     try {
         const result = await pool.query(
-            `SELECT id, university_id, rating, academics_rating, safety_rating, 
+            `SELECT id, university_id, rating, academics_rating, safety_rating,
                     party_scene_rating, food_rating, location_rating, body
              FROM reviews
              WHERE university_id = $1`,
@@ -210,24 +268,24 @@ app.get('/api/reviews/:universityId', async (req, res) => {
 app.get('/uoft', async (req, res) => {
     try {
         const result = await pool.query(`
-            SELECT 
+            SELECT
                 university_information.name AS university_name,
                 majors.name AS major_name,
                 university_majors.admission_average,
                 university_majors.tuition_cost,
                 university_majors.books_supplies
-            FROM university_majors 
+            FROM university_majors
             JOIN university_information ON university_majors.university_id = university_information.id
             JOIN majors ON university_majors.major_id = majors.id
             WHERE university_majors.university_id = $1
         `, [4]);
 
         const result6 = await pool.query(`
-            SELECT 
+            SELECT
                 university_information.name AS university_name,
                 residence.name AS residence_name,
                 residence.room_type AS room_type,
-                residence.capacity AS capacity, 
+                residence.capacity AS capacity,
                 residence.price_range AS price_range,
                 residence.rating AS rating
             FROM residence
@@ -236,7 +294,7 @@ app.get('/uoft', async (req, res) => {
             `, [4])
 
         const result10 = await pool.query(`
-            SELECT 
+            SELECT
                 university_information.name AS university_name,
                 university_rating.overall AS overall,
                 university_rating.academics AS academics,
@@ -246,7 +304,7 @@ app.get('/uoft', async (req, res) => {
                 university_rating.happiness AS happiness,
                 university_rating.residences AS residences,
                 university_rating.location AS location,
-                university_rating.diversity AS diversity, 
+                university_rating.diversity AS diversity,
                 university_rating.affordability AS affordability,
                 university_rating.employability AS employability
             FROM university_rating
@@ -266,7 +324,7 @@ app.get('/uoft', async (req, res) => {
             JOIN university_information ON university_admission.university_id = university_information.id
             WHERE university_admission.university_id = $1
             `, [4])
-        
+
         const result18 = await pool.query(`
             SELECT
                 university_information.name AS university_name,
@@ -279,7 +337,7 @@ app.get('/uoft', async (req, res) => {
             JOIN university_information ON university_cost.university_id = university_information.id
             WHERE university_cost.university_id = $1
             `, [4])
-        
+
         const result22 = await pool.query(`
             SELECT
                 university_information.name AS university_name,
@@ -314,11 +372,11 @@ app.get('/uwaterloo', async (req, res) => {
             `, [1])
 
         const result7 = await pool.query(`
-            SELECT 
+            SELECT
                 university_information.name AS university_name,
                 residence.name AS residence_name,
                 residence.room_type AS room_type,
-                residence.capacity AS capacity, 
+                residence.capacity AS capacity,
                 residence.price_range AS price_range,
                 residence.rating AS rating
             FROM residence
@@ -327,7 +385,7 @@ app.get('/uwaterloo', async (req, res) => {
             `, [1])
 
         const result11 = await pool.query(`
-            SELECT 
+            SELECT
                 university_information.name AS university_name,
                 university_rating.overall AS overall,
                 university_rating.academics AS academics,
@@ -343,7 +401,7 @@ app.get('/uwaterloo', async (req, res) => {
             JOIN university_information ON university_rating.university_id = university_information.id
             WHERE university_rating.university_id = $1
             `, [1])
-        
+
         const result15 = await pool.query(`
             SELECT
                 university_information.name AS university_name,
@@ -356,7 +414,7 @@ app.get('/uwaterloo', async (req, res) => {
             JOIN university_information ON university_admission.university_id = university_information.id
             WHERE university_admission.university_id = $1
             `, [1])
-        
+
         const result19 = await pool.query(`
             SELECT
                 university_information.name AS university_name,
@@ -369,7 +427,7 @@ app.get('/uwaterloo', async (req, res) => {
             JOIN university_information ON university_cost.university_id = university_information.id
             WHERE university_cost.university_id = $1
             `, [1])
-        
+
         const result23 = await pool.query(`
             SELECT
                 university_information.name AS university_name,
@@ -404,11 +462,11 @@ app.get('/western', async (req, res) => {
             `, [2])
 
             const result8 = await pool.query(`
-                SELECT 
+                SELECT
                     university_information.name AS university_name,
                     residence.name AS residence_name,
                     residence.room_type AS room_type,
-                    residence.capacity AS capacity, 
+                    residence.capacity AS capacity,
                     residence.price_range AS price_range,
                     residence.rating AS rating
                 FROM residence
@@ -417,7 +475,7 @@ app.get('/western', async (req, res) => {
             `, [2])
 
         const result12 = await pool.query(`
-            SELECT 
+            SELECT
                 university_information.name AS university_name,
                 university_rating.overall AS overall,
                 university_rating.academics AS academics,
@@ -427,14 +485,14 @@ app.get('/western', async (req, res) => {
                 university_rating.happiness AS happiness,
                 university_rating.residences AS residences,
                 university_rating.location AS location,
-                university_rating.diversity AS diversity, 
+                university_rating.diversity AS diversity,
                 university_rating.affordability AS affordability,
                 university_rating.employability AS employability
             FROM university_rating
             JOIN university_information ON university_rating.university_id = university_information.id
             WHERE university_rating.university_id = $1
             `, [2])
-        
+
         const result16 = await pool.query(`
             SELECT
                 university_information.name AS university_name,
@@ -447,7 +505,7 @@ app.get('/western', async (req, res) => {
             JOIN university_information ON university_admission.university_id = university_information.id
             WHERE university_admission.university_id = $1
             `, [2])
-        
+
         const result20 = await pool.query(`
             SELECT
                 university_information.name AS university_name,
@@ -493,22 +551,22 @@ app.get('/queens', async (req, res) => {
             JOIN majors ON university_majors.major_id = majors.id
             WHERE university_majors.university_id = $1
             `, [3])
-        
+
         const result9 = await pool.query(`
-                SELECT 
+                SELECT
                     university_information.name AS university_name,
                     residence.name AS residence_name,
                     residence.room_type AS room_type,
-                    residence.capacity AS capacity, 
+                    residence.capacity AS capacity,
                     residence.price_range AS price_range,
                     residence.rating AS rating
                 FROM residence
                 JOIN university_information ON residence.university_id = university_information.id
                 WHERE residence.university_id = $1
             `, [3])
-        
+
         const result13 = await pool.query(`
-            SELECT 
+            SELECT
                 university_information.name AS university_name,
                 university_rating.overall AS overall,
                 university_rating.academics AS academics,
@@ -518,14 +576,14 @@ app.get('/queens', async (req, res) => {
                 university_rating.happiness AS happiness,
                 university_rating.residences AS residences,
                 university_rating.location AS location,
-                university_rating.diversity AS diversity, 
+                university_rating.diversity AS diversity,
                 university_rating.affordability AS affordability,
                 university_rating.employability AS employability
             FROM university_rating
             JOIN university_information ON university_rating.university_id = university_information.id
             WHERE university_rating.university_id = $1
             `, [3])
-        
+
         const result17 = await pool.query(`
             SELECT
                 university_information.name AS university_name,
@@ -551,7 +609,7 @@ app.get('/queens', async (req, res) => {
             JOIN university_information ON university_cost.university_id = university_information.id
             WHERE university_cost.university_id = $1
             `, [3])
-        
+
         const result25 = await pool.query(`
             SELECT
                 university_information.name AS university_name,
@@ -574,14 +632,14 @@ app.post("/ai-admission-insight", async (req, res) => {
   const { university, major, userAverage, programMean } = req.body;
 
   const prompt = `
-  You are an admission counselor AI. A student has an average of ${userAverage}% 
-  applying to ${major} at ${university}. 
-  The program's historical mean average is ${programMean}%. 
-  Give a personalized assessment of their chances and provide suggestions to improve their odds. 
+  You are an admission counselor AI. A student has an average of ${userAverage}%
+  applying to ${major} at ${university}.
+  The program's historical mean average is ${programMean}%.
+  Give a personalized assessment of their chances and provide suggestions to improve their odds.
   Respond in 2-3 sentences in a friendly tone.
   `;
 
-  const API_KEY = process.env.GEMINI_API_KEY; 
+  const API_KEY = process.env.GEMINI_API_KEY;
 
   try {
     const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`, {
@@ -603,9 +661,9 @@ app.post("/ai-admission-insight", async (req, res) => {
         console.error("API error:", errorData);
         throw new Error("API call failed");
     }
-    
+
     const data10 = await response.json();
-    const aiMessage = data10.candidates[0].content.parts[0].text; 
+    const aiMessage = data10.candidates[0].content.parts[0].text;
     res.json({ insight: aiMessage });
 
   } catch (error) {
@@ -677,15 +735,36 @@ app.post('/submit-review', async (req, res) => {
     }
 });
 
-// Graceful shutdown
 process.on('SIGTERM', () => {
     console.log('SIGTERM signal received: closing HTTP server')
-    pool.end(() => {
-        console.log('Database pool has ended')
+    server.close(() => {
+        console.log('HTTP server closed')
+        pool.end(() => {
+            console.log('Database pool has ended')
+            process.exit(0)
+        })
+    })
+})
+
+process.on('SIGINT', () => {
+    console.log('SIGINT signal received: closing HTTP server')
+    server.close(() => {
+        console.log('HTTP server closed')
+        pool.end(() => {
+            console.log('Database pool has ended')
+            process.exit(0)
+        })
     })
 })
 
 const PORT = process.env.PORT || 2000
-app.listen(PORT, () => {
+const server = app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on port ${PORT}`)
+    console.log(`Environment: ${process.env.NODE_ENV}`)
+    console.log(`Database host: ${process.env.DB_HOST || 'localhost'}`)
+})
+
+// Handle unhandled promise rejections
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('Unhandled Rejection at:', promise, 'reason:', reason)
 })
