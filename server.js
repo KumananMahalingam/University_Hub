@@ -16,41 +16,62 @@ const path = require('path')
 // Add the express.json() middleware here to parse JSON requests
 app.use(express.json()); 
 
+// AWS RDS PostgreSQL connection with SSL
 const pool = new Pool({
-    user: 'kumananm',
-    host: 'localhost',
-    database: 'login',
-    password: 'BeatBobbyFisher123',
-    port: 5432,
+    user: process.env.DB_USER || 'kumananm',
+    host: process.env.DB_HOST || 'localhost',
+    database: process.env.DB_NAME || 'login',
+    password: process.env.DB_PASSWORD,
+    port: process.env.DB_PORT || 5432,
+    // SSL configuration for RDS
+    ssl: process.env.NODE_ENV === 'production' ? {
+        rejectUnauthorized: false
+    } : false,
+    // Connection pool settings for better performance
+    max: 20,
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 2000,
+})
+
+// Test database connection
+pool.connect((err, client, release) => {
+    if (err) {
+        console.error('Error connecting to database:', err.stack)
+    } else {
+        console.log('Successfully connected to database')
+        release()
+    }
 })
 
 const initializePassport = require('./passport-config')
-initializePassport(
-    passport, pool,
-    /* async email => {
-        const result = await pool.query(`SELECT * FROM users WHERE email = $1`, [email])
-        return result.rows[0]
-    },
-    async id => {
-        const result = await pool.query(`SELECT * FROM users WHERE id = $1`, [id])
-        return result.rows[0]
-    } */
-)
+initializePassport(passport, pool)
 
 app.set('view engine', "ejs")
 app.use(express.urlencoded({ extended: false }))
 app.use(flash())
 app.use(express.static('view_styles'));
+
+// Session configuration with secure settings for production
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    cookie: {
+        secure: process.env.NODE_ENV === 'production', // HTTPS only in production
+        httpOnly: true,
+        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    }
 }))
 
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(methoOverried('_method'))
 app.use(express.static(path.join('')))
+
+// Health check endpoint for ALB/ECS
+app.get('/health', (req, res) => {
+    res.status(200).json({ status: 'healthy' })
+})
 
 app.get('/', checkAuthenticated, (req, res) => {
     res.render('index.ejs', { name: req.user.name })
@@ -80,7 +101,8 @@ app.post('/register', checkNotAuthenticated, async (req, res) => {
         )
 
         res.redirect('/login')
-    } catch {
+    } catch (err) {
+        console.error('Registration error:', err)
         res.redirect('/register')
     }
 })
@@ -559,7 +581,6 @@ app.post("/ai-admission-insight", async (req, res) => {
   Respond in 2-3 sentences in a friendly tone.
   `;
 
-  // Accessing my API key from a .env file
   const API_KEY = process.env.GEMINI_API_KEY; 
 
   try {
@@ -584,7 +605,6 @@ app.post("/ai-admission-insight", async (req, res) => {
     }
     
     const data10 = await response.json();
-    // Parsing the response of the API
     const aiMessage = data10.candidates[0].content.parts[0].text; 
     res.json({ insight: aiMessage });
 
@@ -616,7 +636,6 @@ app.get("/review/:id", (req, res) => {
 });
 
 app.post('/submit-review', async (req, res) => {
-    // The data sent from the frontend is now available in req.body
     const reviewData = req.body;
 
     console.log('Received review data:', reviewData);
@@ -650,15 +669,23 @@ app.post('/submit-review', async (req, res) => {
     ];
 
     try {
-        // Execute the query using the connection pool
         await pool.query(insertReviewQuery, values);
-
         res.status(200).json({ message: 'Review successfully saved to database.' });
-
     } catch (error) {
         console.error('Failed to save review to database:', error);
         res.status(500).json({ error: 'Failed to save review. Please try again later.' });
     }
 });
 
-app.listen(2000)
+// Graceful shutdown
+process.on('SIGTERM', () => {
+    console.log('SIGTERM signal received: closing HTTP server')
+    pool.end(() => {
+        console.log('Database pool has ended')
+    })
+})
+
+const PORT = process.env.PORT || 2000
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`)
+})
