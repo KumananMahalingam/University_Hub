@@ -7,6 +7,16 @@
 <title>Universities in Canada</title>
 </head>
 <body>
+    <!-- Animated Background Particles -->
+    <div class="bg-particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <!-- Navigation -->
     <nav>
         <ul>
             <li><a href="/">Home</a></li>
@@ -16,54 +26,164 @@
             <li class="profile-menu">
                 <img src="/profile.png" alt="Profile" class="profile-icon">
                 <div class="dropdown">
-                    <button>Profile</button>
-                    <button>Settings</button>
-                    <form action="/login" method="post"><button type="submit">Logout</button></form>
+                    <form action="/login" method="post">
+                        <button type="submit">Logout</button>
+                    </form>
                 </div>
             </li>
         </ul>
     </nav>
 
-  <div class="container">
-    <h1>Universities in Canada</h1>
-    <div class="cards-wrapper">
-      <% data5.forEach(row => { %>
-        <%
-        const images = {
-        'University of Toronto': 'night.jpg',
-        'University of Waterloo': 'orange_city.jpg',
-        'Western University': 'purple_city.jpg',
-        'Queens University': 'sunset.jpg'
-        };
-        %>
-        <% 
-        /* Create variable url, if row.name is equal to a certain university, it will be used in the url */
-          let url;
-          if(row.name === 'University of Toronto') url = 'uoft';
-          else if(row.name === 'University of Waterloo') url = 'uwaterloo';
-          else if(row.name === 'Western University') url = 'western';
-          else if(row.name === 'Queens University') url = 'queens';
-          else url = row.name.toLowerCase().replace(/\s+/g, '');
-        %>
-        <a href="/<%= url %>" class="card" aria-label="<%= row.name %>">
-          <img src="<%= images[row.name] %>" alt="<%= row.name %> Image" />
-          <div class="card-content">
-            <div class="university-name"><%= row.name %></div>
-            <div class="badges">
-              <span class="badge"><%= row.province %></span>
-              <span class="badge"><%= row.city %></span>
-              <span class="badge"><%= row.country %></span>
-            </div>
-          </div>
-        </a>
-      <% }) %>
-    </div>
-  </div>
-</body>
-</html>
+    <!-- Main Content -->
+    <div class="container">
+        <div class="page-header">
+            <h1>Universities in Canada</h1>
+            <p class="subtitle">Discover the best universities across Canada</p>
 
-<script>
-  window.addEventListener('DOMContentLoaded', () => {
-    document.querySelector('.container').classList.add('slide-up');
-  });
-</script>
+            <div class="search-bar-container">
+                <input type="text" class="search-bar" placeholder="Search universities, programs, or locations...">
+                <span class="search-icon">🔍</span>
+            </div>
+        </div>
+            <button class="filter-btn active">All</button>
+            <button class="filter-btn">Ontario</button>
+            <button class="filter-btn">Top Rated</button>
+            <button class="filter-btn">Most Affordable</button>
+        </div>
+
+        <div class="cards-wrapper">
+            <!-- University of Toronto Card -->
+            <a href="/uoft" class="card">
+                <div class="card-image-wrapper">
+                    <img src="night.jpg" alt="University of Toronto">
+                    <div class="card-overlay"></div>
+                    <div class="rank-badge">#1 in Canada</div>
+                </div>
+                <div class="card-content">
+                    <div class="university-name">University of Toronto</div>
+                    <div class="badges">
+                        <span class="badge">Ontario</span>
+                        <span class="badge">Toronto</span>
+                        <span class="badge">Canada</span>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="info-item">
+                        <span class="info-label">Programs</span>
+                        <span class="info-value">700+</span>
+                    </div>
+                    <button class="cta-button">Learn More</button>
+                    <div class="info-item">
+                        <span class="info-label">Students</span>
+                        <span class="info-value">90K+</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- University of Waterloo Card -->
+            <a href="/uwaterloo" class="card">
+                <div class="card-image-wrapper">
+                    <img src="orange_city.jpg" alt="University of Waterloo">
+                    <div class="card-overlay"></div>
+                    <div class="rank-badge">#2 Tech Hub</div>
+                </div>
+                <div class="card-content">
+                    <div class="university-name">University of Waterloo</div>
+                    <div class="badges">
+                        <span class="badge">Ontario</span>
+                        <span class="badge">Waterloo</span>
+                        <span class="badge">Canada</span>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="info-item">
+                        <span class="info-label">Co-op</span>
+                        <span class="info-value">World's Best</span>
+                    </div>
+                    <button class="cta-button">Learn More</button>
+                    <div class="info-item">
+                        <span class="info-label">Students</span>
+                        <span class="info-value">42K+</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Western University Card -->
+            <a href="/western" class="card">
+                <div class="card-image-wrapper">
+                    <img src="purple_city.jpg" alt="Western University">
+                    <div class="card-overlay"></div>
+                    <div class="rank-badge">#3 Business</div>
+                </div>
+                <div class="card-content">
+                    <div class="university-name">Western University</div>
+                    <div class="badges">
+                        <span class="badge">Ontario</span>
+                        <span class="badge">London</span>
+                        <span class="badge">Canada</span>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="info-item">
+                        <span class="info-label">Ivey</span>
+                        <span class="info-value">Top MBA</span>
+                    </div>
+                    <button class="cta-button">Learn More</button>
+                    <div class="info-item">
+                        <span class="info-label">Students</span>
+                        <span class="info-value">38K+</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Queens University Card -->
+            <a href="/queens" class="card">
+                <div class="card-image-wrapper">
+                    <img src="sunset.jpg" alt="Queens University">
+                    <div class="card-overlay"></div>
+                    <div class="rank-badge">#4 Heritage</div>
+                </div>
+                <div class="card-content">
+                    <div class="university-name">Queen's University</div>
+                    <div class="badges">
+                        <span class="badge">Ontario</span>
+                        <span class="badge">Kingston</span>
+                        <span class="badge">Canada</span>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="info-item">
+                        <span class="info-label">Founded</span>
+                        <span class="info-value">1841</span>
+                    </div>
+                    <button class="cta-button">Learn More</button>
+                    <div class="info-item">
+                        <span class="info-label">Students</span>
+                        <span class="info-value">25K+</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Search functionality
+        const searchBar = document.querySelector('.search-bar');
+        const cards = document.querySelectorAll('.card');
+
+        searchBar.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+
+            cards.forEach(card => {
+                const universityName = card.querySelector('.university-name').textContent.toLowerCase();
+                const badges = Array.from(card.querySelectorAll('.badge')).map(b => b.textContent.toLowerCase()).join(' ');
+
+                if (universityName.includes(searchTerm) || badges.includes(searchTerm)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
