@@ -11,13 +11,38 @@
             <li class="profile-menu">
                 <img src="/profile.png" alt="Profile" class="profile-icon">
                 <div class="dropdown">
-                    <button>Profile</button>
-                    <button>Settings</button>
                     <form action="/login" method="post"><button type="submit">Logout</button></form>
                 </div>
             </li>
         </ul>
     </nav>
+
+    <%
+    // Helper function to format currency
+    function formatCurrency(amount) {
+        return new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+        }).format(amount);
+    }
+    %>
+
+    <%
+    function formatCurrencyRange(rangeString) {
+    if (!rangeString) return 'N/A';
+
+    // If it's a single number
+    if (!rangeString.includes('-')) {
+        return formatCurrency(rangeString);
+    }
+
+    // If it's a range
+    const [min, max] = rangeString.split('-').map(val => parseInt(val.trim(), 10));
+    return `${formatCurrency(min)} - ${formatCurrency(max)}`;
+    }
+    %>
 
     <% const name = data3[0].university_name; %>
     <% const admissionAvg = data3[0].admission_average; %>
@@ -52,7 +77,7 @@
 
     <div class="container-wrapper">
         <h1>Western University</h1>
-        
+
         <!-- Quick Facts Card -->
         <div class="uni-info-box">
             <h2>Quick Facts</h2>
@@ -63,7 +88,7 @@
                 </div>
                 <div class="info-item">
                     <h3>Avg. Cost</h3>
-                    <p>$<%= avgCost %></p>
+                    <p>$<%= formatCurrencyRange(avgCost) %></p>
                 </div>
                 <div class="info-item">
                     <h3>Graduation Rate</h3>
@@ -132,8 +157,8 @@
             </div>
             <ul>
                 <li>
-                    <strong>Application Fee:</strong> 
-                    <span class="green-pill">$<%= application_fee %></span>
+                    <strong>Application Fee:</strong>
+                    <span class="green-pill">$<%= formatCurrencyRange(application_fee) %></span>
                 </li>
                 <li><strong>Application Website:</strong> <a href="<%= website %>" target="_blank" style="color: #673ab7; font-weight: 600; text-decoration: none;">Western</a></li>
                 <li><strong>Supplementary Application:</strong> Ivey Business School (highly considered)</li>
@@ -147,7 +172,7 @@
                     <strong class="cost-bar-label">Average Cost:</strong>
                     <div class="cost-bar-wrapper">
                         <div class="cost-bar" data-cost="<%= average_cost %>">
-                            <span class="cost-value">$<%= average_cost %></span>
+                            <span class="cost-value">$<%= formatCurrencyRange(average_cost) %></span>
                         </div>
                     </div>
                 </li>
@@ -155,7 +180,7 @@
                     <strong class="cost-bar-label">Average Housing Cost:</strong>
                     <div class="cost-bar-wrapper">
                         <div class="cost-bar" data-cost="<%= average_housing_cost %>">
-                             <span class="cost-value">$<%= average_housing_cost %></span>
+                             <span class="cost-value">$<%= formatCurrencyRange(average_housing_cost) %></span>
                         </div>
                     </div>
                 </li>
@@ -163,7 +188,7 @@
                     <strong class="cost-bar-label">Average Meal Plan Cost:</strong>
                     <div class="cost-bar-wrapper">
                         <div class="cost-bar" data-cost="<%= average_meal_plan_cost %>">
-                             <span class="cost-value">$<%= average_meal_plan_cost %></span>
+                             <span class="cost-value">$<%= formatCurrencyRange(average_meal_plan_cost) %></span>
                         </div>
                     </div>
                 </li>
@@ -171,7 +196,7 @@
                     <strong class="cost-bar-label">Average Domestic Tuition:</strong>
                     <div class="cost-bar-wrapper">
                         <div class="cost-bar" data-cost="<%= average_domestic_tuition %>">
-                             <span class="cost-value">$<%= average_domestic_tuition %></span>
+                             <span class="cost-value">$<%= formatCurrencyRange(average_domestic_tuition) %></span>
                         </div>
                     </div>
                 </li>
@@ -179,7 +204,7 @@
                     <strong class="cost-bar-label">Average International Tuition:</strong>
                     <div class="cost-bar-wrapper">
                         <div class="cost-bar" data-cost="<%= average_international_cost %>">
-                             <span class="cost-value">$<%= average_international_cost %></span>
+                             <span class="cost-value">$<%= formatCurrencyRange(average_international_cost) %></span>
                         </div>
                     </div>
                 </li>
@@ -209,7 +234,7 @@
                     <span><%= row.residence_name %></span>
                     <span><%= row.room_type %></span>
                     <span><%= row.capacity %></span>
-                    <span><%= row.price_range %></span>
+                    <span><%= formatCurrencyRange(row.price_range) %></span>
                     <span><span class="rating-pill"><%= row.rating %></span></span>
                 </div>
             <% }) %>
@@ -220,7 +245,7 @@
             <ul>
                 <li><strong>Graduation Rate:</strong> <%= gradRate %></li>
                 <li><strong>Employment Rate:</strong> <%= employment_rate %></li>
-                <li><strong>Median Income:</strong> $<%= median_income %></li>
+                <li><strong>Median Income:</strong> $<%= formatCurrencyRange(median_income) %></li>
             </ul>
         </div>
     </div>
@@ -231,7 +256,7 @@
 
             // Set a maximum value to scale all the bars against.
             // This is the largest value in our dataset, which is the international tuition cost
-            const maxValue = 45000; 
+            const maxValue = 45000;
             const minWidthPx = 80; // Minimum width for the bar to hold the text
 
             costBars.forEach(bar => {
@@ -239,7 +264,7 @@
                 const cost = parseInt(bar.dataset.cost.replace(/,/g, ''), 10);
 
                 let percentage = (cost / maxValue) * 100;
-                
+
                 // Apply a max width cap to the longest bar to ensure the text doesn't overflow
                 if (percentage > 95) {
                     percentage = 95;
@@ -252,10 +277,10 @@
 
                 if (calculatedWidthPx < minWidthPx) {
                     bar.style.minWidth = `${minWidthPx}px`; // Force a minimum width
-                    bar.classList.add('dark-text'); 
+                    bar.classList.add('dark-text');
                 } else {
                     bar.style.minWidth = ''; // Reset min-width
-                    bar.classList.remove('dark-text'); 
+                    bar.classList.remove('dark-text');
                 }
             });
         };

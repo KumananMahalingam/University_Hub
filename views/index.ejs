@@ -1,43 +1,94 @@
 <body>
-    <link rel="stylesheet" href="/index_style.css">
+    <div class="bg-particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
     <nav>
         <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/search" class="active">Universities</a></li>
+            <li><a href="/" class="active">Home</a></li>
+            <li><a href="/search">Universities</a></li>
             <li><a href="/review">Reviews</a></li>
             <li><a href="/calculator">Calculator</a></li>
             <li class="profile-menu">
-                <img src="/profile.png" alt="Profile" class="profile-icon">
+                <img src="/api/placeholder/45/45" alt="Profile" class="profile-icon">
                 <div class="dropdown">
-                    <button>Profile</button>
-                    <button>Settings</button>
-                    <form action="/login" method="post"><button type="submit">Logout</button></form>
+                    <form action="/login" method="post">
+                        <button type="submit">Logout</button>
+                    </form>
                 </div>
             </li>
         </ul>
     </nav>
+
     <div class="main-content">
         <div class="left-content">
-            <button class="button-pill">Hi <%= name %></button>
-            <h2 class="main-title">UniversityHub</h2>
-            <p class="sub-title">Your university resource hub.</p>
-            <button class="search-button" onclick="window.location.href='/search'">
-                Search Universities
-            </button>
+            <div class="greeting-pill">Hi User</div>
+            <h1 class="main-title">
+                <span class="title-gradient">UniversityHub</span>
+            </h1>
+            <p class="sub-title">Your comprehensive university resource hub. Discover, compare, and plan your educational journey.</p>
+
+            <div class="cta-buttons">
+                <button class="btn-primary" onclick="window.location.href='/search'">
+                    Search Universities
+                </button>
+                <button class="btn-secondary" onclick="window.location.href='/calculator'">
+                    Use Calculator
+                </button>
+            </div>
+
+            <div class="features-section">
+                <h3 class="features-title">What You Can Do</h3>
+                <ul class="features-list">
+                    <li class="feature-item">Compare universities side by side</li>
+                    <li class="feature-item">Calculate admission chances</li>
+                    <li class="feature-item">Read student reviews</li>
+                    <li class="feature-item">Explore programs & majors</li>
+                    <li class="feature-item">Check tuition & costs</li>
+                    <li class="feature-item">View campus facilities</li>
+                </ul>
+            </div>
         </div>
+
         <div class="right-content">
-            <div>
-                <span>Search</span>
-                <span class="value">4 Universities</span>
-            </div>
-            <div>
-                <span>Calculator</span>
-                <span class="value">10+ Averages</span>
-            </div>
-            <div>
-                <span>Majors</span>
-                <span class="value">40+ Majors</span>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-icon">🎓</span>
+                    <div class="stat-label">Universities</div>
+                    <div class="stat-value">4+</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-icon">📚</span>
+                    <div class="stat-label">Majors</div>
+                    <div class="stat-value">40+</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-icon">🧮</span>
+                    <div class="stat-label">Calculators</div>
+                    <div class="stat-value">10+</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-icon">⭐</span>
+                    <div class="stat-label">Reviews</div>
+                    <div class="stat-value">100+</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-icon">💰</span>
+                    <div class="stat-label">Cost Data</div>
+                    <div class="stat-value">All Universities</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-icon">📊</span>
+                    <div class="stat-label">Insights</div>
+                    <div class="stat-value">Live</div>
+                </div>
             </div>
         </div>
     </div>
-</body> 
+</body>
+</html>
