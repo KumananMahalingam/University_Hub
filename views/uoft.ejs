@@ -173,7 +173,7 @@
                     <strong class="cost-bar-label">Average Cost:</strong>
                     <div class="cost-bar-wrapper">
                         <div class="cost-bar" data-cost="<%= average_cost %>">
-                            <span class="cost-value">$<%= formatCurrencyRange(average_cost) %></span>
+                            <span class="cost-value"><%= formatCurrencyRange(average_cost) %></span>
                         </div>
                     </div>
                 </li>
@@ -181,7 +181,7 @@
                     <strong class="cost-bar-label">Books & Supplies:</strong>
                     <div class="cost-bar-wrapper">
                         <div class="cost-bar" data-cost="<%= books_supplies %>">
-                             <span class="cost-value">$<%= formatCurrencyRange(books_supplies) %></span>
+                             <span class="cost-value"><%= formatCurrencyRange(books_supplies) %></span>
                         </div>
                     </div>
                 </li>
@@ -189,7 +189,7 @@
                     <strong class="cost-bar-label">Average Housing Cost:</strong>
                     <div class="cost-bar-wrapper">
                         <div class="cost-bar" data-cost="<%= average_housing_cost %>">
-                             <span class="cost-value">$<%= formatCurrencyRange(average_housing_cost) %></span>
+                             <span class="cost-value"><%= formatCurrencyRange(average_housing_cost) %></span>
                         </div>
                     </div>
                 </li>
@@ -197,7 +197,7 @@
                     <strong class="cost-bar-label">Average Meal Plan Cost:</strong>
                     <div class="cost-bar-wrapper">
                         <div class="cost-bar" data-cost="<%= average_meal_plan_cost %>">
-                             <span class="cost-value">$<%= formatCurrencyRange(average_meal_plan_cost) %></span>
+                             <span class="cost-value"><%= formatCurrencyRange(average_meal_plan_cost) %></span>
                         </div>
                     </div>
                 </li>
@@ -205,7 +205,7 @@
                     <strong class="cost-bar-label">Average Domestic Tuition:</strong>
                     <div class="cost-bar-wrapper">
                         <div class="cost-bar" data-cost="<%= average_domestic_tuition %>">
-                             <span class="cost-value">$<%= formatCurrencyRange(average_domestic_tuition) %></span>
+                             <span class="cost-value"><%= formatCurrencyRange(average_domestic_tuition) %></span>
                         </div>
                     </div>
                 </li>
@@ -213,7 +213,7 @@
                     <strong class="cost-bar-label">Average International Tuition:</strong>
                     <div class="cost-bar-wrapper">
                         <div class="cost-bar" data-cost="<%= average_international_cost %>">
-                             <span class="cost-value">$<%= formatCurrencyRange(average_international_cost) %></span>
+                             <span class="cost-value"><%= formatCurrencyRange(average_international_cost) %></span>
                         </div>
                     </div>
                 </li>
@@ -254,7 +254,7 @@
             <ul>
                 <li><strong>Graduation Rate:</strong> <%= gradRate %></li>
                 <li><strong>Employment Rate:</strong> <%= employment_rate %></li>
-                <li><strong>Median Income:</strong> $<%= formatCurrencyRange(median_income) %></li>
+                <li><strong>Median Income:</strong> <%= formatCurrencyRange(median_income) %></li>
             </ul>
         </div>
     </div>
