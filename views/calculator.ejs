@@ -44,21 +44,21 @@
       <option value="">--Please choose a university first--</option>
     </select>
   </div>
+
   <div class="calculator-flex-container">
-    
     <div>
       <canvas id="averagesChart" width="600" height="400" style="margin-top: 30px;"></canvas>
     </div>
-    
+
     <div class="ai-insight">
       <div class="input-section">
         <label for="user_average">Enter Your Average:</label>
-        <input type="text" id="user_average" name="user_average"> 
+        <input type="text" id="user_average" name="user_average">
         <button type="button" id="check_chances_btn">Check Chances</button>
         <p id="result"></p>
         <p id="notes" style="color:gray;"></p>
       </div>
-    
+
       <div id="ai-insight-box" class="ai-insight">
         <h2>AI Admission Insight</h2>
           <p id="loading-spinner" style="display: none;">
@@ -68,7 +68,7 @@
         <p id="ai-insight-text">Enter your details above and click "Submit" to see insights.</p>
       </div>
     </div>
-    
+
   </div>
 
   <script>
@@ -149,7 +149,7 @@
           title: { display: true, text: 'Admission Averages by Year', font: { size: 20 } }
         },
         scales: {
-          
+
           x: { ticks: { font: { size: 14 } }, grid: { color: '#ddd' } },
           y: { min:0, max:100, ticks: { font: { size: 14 } }, grid: { color: '#ddd' } }
         }
@@ -259,22 +259,22 @@
         const res = await fetch('/ai-admission-insight', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            university: universityText, 
-            major: majorText, 
-            userAverage, 
-            programMean 
+          body: JSON.stringify({
+            university: universityText,
+            major: majorText,
+            userAverage,
+            programMean
           })
         });
 
         const data = await res.json();
-        
+
         loadingSpinner.style.display = 'none';
         insightText.style.display = 'block';
         insightText.textContent = data.insight;
       } catch (err) {
         console.error(err);
-        
+
         loadingSpinner.style.display = 'none';
         insightText.style.display = 'block';
         insightText.textContent = "AI insight generation failed. Please try again.";
