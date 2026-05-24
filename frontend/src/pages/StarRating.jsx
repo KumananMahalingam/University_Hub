@@ -10,13 +10,13 @@ export default function StarRating({ name, label, value, onChange }) {
         {[1, 2, 3, 4, 5].map((star) => (
           <span
             key={star}
-            className="fas fa-star"
             style={{
               fontSize: '1.8rem',
               cursor: 'pointer',
               color: star <= (hovered || value) ? '#fbbf24' : '#e0e0e0',
               transition: 'color 0.15s, transform 0.15s',
               transform: star <= (hovered || value) ? 'scale(1.15)' : 'scale(1)',
+              display: 'inline-block',
             }}
             onMouseEnter={() => setHovered(star)}
             onMouseLeave={() => setHovered(0)}

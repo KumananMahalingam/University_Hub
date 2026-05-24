@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import Nav from '../components/Nav';
 import StarRating from '../components/StarRating';
 import { useAuth } from '../context/AuthContext';
@@ -23,8 +23,8 @@ const RATING_FIELDS = [
 ];
 
 export default function ReviewForm() {
-  const { id }     = useParams();
-  const { user }   = useAuth();
+  const { id }         = useParams();
+  const { user }       = useAuth();
   const universityName = UNIVERSITIES[Number(id)] || 'Unknown University';
 
   const [ratings, setRatings] = useState({
@@ -43,27 +43,34 @@ export default function ReviewForm() {
 
     const missing = RATING_FIELDS.filter((f) => !ratings[f.name]);
     if (missing.length) {
-      setStatus({ type: 'error', message: `Please rate: ${missing.map(f => f.label).join(', ')}` });
+      setStatus({
+        type: 'error',
+        message: `Please rate: ${missing.map((f) => f.label).join(', ')}`,
+      });
       return;
     }
 
+    // Snake_case keys to match @JsonProperty on ReviewDto.CreateRequest
     const payload = {
-      user_id:            user.id,
-      university_id:      Number(id),
-      rating:             ratings.overall,
-      body:               reviewText,
-      academics_rating:   ratings.academics,
-      food_rating:        ratings.food,
-      safety_rating:      ratings.safety,
-      party_scene_rating: ratings.party,
+      user_id:             user.id,
+      university_id:       Number(id),
+      rating:              ratings.overall,
+      body:                reviewText,
+      academics_rating:    ratings.academics,
+      food_rating:         ratings.food,
+      safety_rating:       ratings.safety,
+      party_scene_rating:  ratings.party,
       student_life_rating: ratings.student_life,
-      location_rating:    ratings.location,
+      location_rating:     ratings.location,
     };
 
     try {
       await submitReview(payload);
       alert('Review submitted successfully!');
-      setRatings({ overall: 0, academics: 0, food: 0, safety: 0, party: 0, student_life: 0, location: 0 });
+      setRatings({
+        overall: 0, academics: 0, food: 0,
+        safety: 0, party: 0, student_life: 0, location: 0,
+      });
       setReviewText('');
     } catch {
       setStatus({ type: 'error', message: 'Failed to submit review. Please try again.' });
@@ -73,9 +80,10 @@ export default function ReviewForm() {
   return (
     <>
       <link rel="stylesheet" href="/reviewForm_style.css" />
-      {/* Font Awesome for star icons fallback */}
-      <link rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+      <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      />
 
       <Nav activePage="review" />
 
