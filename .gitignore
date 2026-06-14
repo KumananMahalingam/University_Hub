@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+frontend/node_modules/
+
+# Build output
+backend/target/
+frontend/build/
+
+# Secrets and local config
+.env
+.env.local
+.env.*.local
+
+# Database dumps (may contain user data)
+*.sql
+*.dump
+*.backup
+
+# IDE / OS
+.idea/
+.vscode/
+*.imds
+.DS_Store
+Thumbs.db
